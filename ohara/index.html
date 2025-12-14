@@ -125,6 +125,16 @@
 const qFrame = document.getElementById("questionFrame");
 const aFrame = document.getElementById("answerFrame");
 const titleEl = document.getElementById("currentTitle");
+
+// currentTitle 右側に表示する要素
+const titleStatSpan = document.createElement("span");
+titleStatSpan.id = "titleQuizStat";
+titleStatSpan.style.marginLeft = "12px";
+titleStatSpan.style.fontSize = "0.9em";
+titleStatSpan.style.color = "#555";
+
+titleEl.after(titleStatSpan);
+
 const historyContainer = document.getElementById("historyContainer");
 
 let clickedOnce = false;
@@ -676,6 +686,16 @@ qFrame.addEventListener("load", () => {
   if (!bookmarkBtn) return;
 
   const qFile = qFrame.src.split("/").pop();
+  const stats = getQuizStats(qFile);
+
+  const statEl = document.getElementById("titleQuizStat");
+  if (statEl) {
+    statEl.textContent =
+      stats.count > 0
+        ? `｜ 回答: ${stats.count}回 / 平均正解率: ${stats.avgRate}%`
+        : "｜ 未回答";
+  }
+  
   const bookmarks = loadBookmarks();
   if (bookmarks.includes(qFile)) {
     bookmarkBtn.style.backgroundColor = "yellow";
@@ -726,6 +746,22 @@ function updateMenuBookmarks() {
       btn.style.backgroundColor = ""; // ブックマーク以外は背景色なし
     }
   });
+}
+
+function getQuizStats(fileName) {
+  const data = loadResults();
+  const records = data[fileName] || [];
+
+  if (records.length === 0) {
+    return { count: 0, avgRate: 0 };
+  }
+
+  const count = records.length;
+  const avgRate = Math.round(
+    records.reduce((sum, r) => sum + (r.rate || 0), 0) / count
+  );
+
+  return { count, avgRate };
 }
 
 </script>
