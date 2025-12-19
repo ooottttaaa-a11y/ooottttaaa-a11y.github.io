@@ -1,769 +1,419 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<title>問題集 - 自動メニュー統合版</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>問題集 - モバイル版</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<style>
-.page-number {
-  display: none !important;
-}
-</style>
+    <style>
+        body {
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
+        #questionFrame,
+        #answerFrame {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+
+        .page-number {
+            display: none !important;
+        }
+
+        /* メニュー内のボタン調整 */
+        #questionList .btn {
+            text-align: left;
+            margin-bottom: 2px;
+        }
+
+        .folder-title {
+            background-color: #f8f9fa;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        #titleQuizStat {
+            display: block;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+    </style>
 </head>
-<body class="bg-light" style="height:100vh; overflow:hidden;">
 
-<div class="container-fluid h-100">
-  <div class="row h-100">
+<body class="bg-light">
 
-    <!-- 左メニュー -->
-    <div class="col-3 col-md-2 bg-body-secondary border-end p-3" 
-         id="menuArea" 
-         style="overflow-y:auto; max-height:100vh;">
-      <h5 class="fw-bold mb-3">問題一覧</h5>
-      <div id="questionList" class="d-grid gap-2"></div>
-    </div>
-
-    <!-- 右メインエリア -->
-    <div class="col-9 col-md-10 p-0 d-flex flex-column h-100">
-      <!-- 上部バー -->
-      <div class="d-flex justify-content-between align-items-center bg-secondary-subtle border-bottom p-2" 
-           style="position:relative; z-index:10;">
-        <strong id="currentTitle" class="ms-2">問題を選択してください</strong>
-        <div class="me-2 d-flex gap-2 align-items-center">
-          <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#historyModal">問題履歴を見る</button>
-          <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#videoHistoryModal">動画履歴を見る</button>
-          <button id="reloadBtn" class="btn btn-secondary btn-sm">再読み込み</button>
-          <button id="clearBtn" class="btn btn-outline-danger btn-sm">入力クリア</button>
-
-          <!-- 追加ボタン：ダウンロード／アップロード -->
-          <button id="downloadQuizBtn" class="btn btn-outline-primary btn-sm">回答履歴DL</button>
-          <button id="uploadQuizBtn" class="btn btn-outline-primary btn-sm">回答履歴UP</button>
-          <input type="file" id="uploadQuizFile" accept="application/json" class="d-none">
-
-          <button id="downloadVideoBtn" class="btn btn-outline-success btn-sm">動画履歴DL</button>
-          <button id="uploadVideoBtn" class="btn btn-outline-success btn-sm">動画履歴UP</button>
-          <input type="file" id="uploadVideoFile" accept="application/json" class="d-none">
-
+    <!-- ヘッダー -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2">
+        <div class="container-fluid p-0">
+            <button class="btn btn-outline-light me-2" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="text-white text-truncate flex-grow-1">
+                <div id="currentTitle" class="fw-bold" style="font-size: 0.9rem;">問題を選択してください</div>
+                <div id="titleQuizStat"></div>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    ツール
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><button class="dropdown-item" data-bs-toggle="modal"
+                            data-bs-target="#historyModal">問題履歴</button></li>
+                    <li><button class="dropdown-item" data-bs-toggle="modal"
+                            data-bs-target="#videoHistoryModal">動画履歴</button></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><button id="reloadBtn" class="dropdown-item">再読み込み</button></li>
+                    <li><button id="clearBtn" class="dropdown-item text-danger">入力クリア</button></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><button id="downloadQuizBtn" class="dropdown-item">回答履歴DL</button></li>
+                    <li><button id="uploadQuizBtn" class="dropdown-item">回答履歴UP</button></li>
+                    <li><button id="downloadVideoBtn" class="dropdown-item">動画履歴DL</button></li>
+                    <li><button id="uploadVideoBtn" class="dropdown-item">動画履歴UP</button></li>
+                </ul>
+            </div>
         </div>
-      </div>
+    </nav>
 
-      <!-- 問題iframe -->
-      <iframe id="questionFrame" class="flex-fill w-100 border-0 bg-white"></iframe>
-      <iframe id="answerFrame" class="flex-fill w-100 border-0 bg-white d-none"></iframe>
-    </div>
-  </div>
-</div>
+    <!-- メインエリア (iframe) -->
+    <iframe id="questionFrame" class="bg-white"></iframe>
+    <iframe id="answerFrame" class="bg-white d-none"></iframe>
 
-<!-- 問題履歴モーダル -->
-<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">問題履歴</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div id="historyContainer" class="table-responsive"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 動画履歴モーダル -->
-<div class="modal fade" id="videoHistoryModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">動画履歴</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>動画タイトル</th>
-              <th>視聴回数</th>
-              <th>最終視聴日時</th>
-            </tr>
-          </thead>
-          <tbody id="video-history-body">
-          </tbody>
-        </table>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- 結果モーダル -->
-<div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">結果</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center fs-5" id="resultContent"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-
-const qFrame = document.getElementById("questionFrame");
-const aFrame = document.getElementById("answerFrame");
-const titleEl = document.getElementById("currentTitle");
-
-// currentTitle 右側に表示する要素
-const titleStatSpan = document.createElement("span");
-titleStatSpan.id = "titleQuizStat";
-titleStatSpan.style.marginLeft = "12px";
-titleStatSpan.style.fontSize = "0.9em";
-titleStatSpan.style.color = "#555";
-
-titleEl.after(titleStatSpan);
-
-const historyContainer = document.getElementById("historyContainer");
-
-let clickedOnce = false;
-let timerInterval = null;
-let elapsedSeconds = 0;
-
-
-// ========================
-// data.json 一覧取得（PHP廃止）
-// ========================
-fetch("data.json")
-  .then(r => {
-    if (!r.ok) throw new Error("data.json の読み込みに失敗しました");
-    return r.json();
-  })
-  .then(data => buildMenu(data))
-  .catch(err => {
-    document.getElementById("questionList").innerHTML =
-      `<div class="text-danger">問題リスト取得失敗: ${err.message}</div>`;
-  });
-
-
-// ========================
-// メニュー生成
-// ========================
-function buildMenu(data) {
-  const list = document.getElementById("questionList");
-  list.innerHTML = "";
-
-  for (const [folder, items] of Object.entries(data)) {
-    const section = document.createElement("div");
-    const titleWrapper = document.createElement("div");
-    titleWrapper.className = "d-flex align-items-center gap-1";
-
-    const title = document.createElement("h6");
-    title.classList.add("fw-bold", "mt-2", "mb-1");
-    title.textContent = folder;
-
-    titleWrapper.appendChild(title);
-
-    // フォルダ内で最初の動画
-    let firstVideo = items.find(f => typeof f === "string" && f.toLowerCase().endsWith(".mp4"));
-    if (firstVideo) {
-      const videoBtn = document.createElement("button");
-      videoBtn.className = "btn btn-sm btn-outline-secondary video-btn";
-      videoBtn.dataset.video = "data/" + firstVideo;
-      videoBtn.textContent = "動画";
-      videoBtn.addEventListener("click", e => {
-        e.stopPropagation();
-        showVideoModal("data/" + firstVideo);
-      });
-      titleWrapper.appendChild(videoBtn);
-    }
-
-    section.appendChild(titleWrapper);
-
-    items.forEach(item => {
-      if (typeof item === "string" && !item.toLowerCase().endsWith(".mp4")) {
-        const btn = document.createElement("button");
-        btn.className = "btn btn-light text-start";
-        btn.dataset.file = "data/" + item;
-        btn.textContent = item.split("/").pop().replace(".html", "");
-        btn.addEventListener("click", () => {
-          document.querySelectorAll("#questionList .btn-light").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          qFrame.src = btn.dataset.file;
-          aFrame.classList.add("d-none");
-          qFrame.classList.remove("d-none");
-          titleEl.textContent = btn.textContent;
-          clickedOnce = false;
-        });
-        section.appendChild(btn);
-      }
-    });
-
-    list.appendChild(section);
-  }
-
-  updateMenuHighlight();
-  updateVideoButtons();
-  updateMenuBookmarks();
-}
-
-
-// ========================
-// 動画履歴 localStorage
-// ========================
-function loadVideoHistory() {
-  return JSON.parse(localStorage.getItem("video_history") || "{}");
-}
-
-function saveVideoHistory(videoPath) {
-  const data = loadVideoHistory();
-
-  if (!data[videoPath]) {
-    data[videoPath] = { watched: true, count: 0, lastWatched: "" };
-  }
-
-  data[videoPath].watched = true;
-  data[videoPath].count += 1;
-  data[videoPath].lastWatched = new Date().toLocaleString("ja-JP");
-
-  localStorage.setItem("video_history", JSON.stringify(data));
-}
-
-function updateVideoButtons() {
-  const history = loadVideoHistory();
-  document.querySelectorAll("#questionList button.video-btn").forEach(btn => {
-    const path = btn.dataset.video;
-    if (history[path]?.watched) {
-      btn.classList.remove("btn-outline-secondary");
-      btn.classList.add("btn-primary");
-    } else {
-      btn.classList.remove("btn-primary");
-      btn.classList.add("btn-outline-secondary");
-    }
-  });
-}
-
-
-// ========================
-// 動画モーダル
-// ========================
-function showVideoModal(src) {
-
-  saveVideoHistory(src);
-  updateVideoButtons();
-
-  let modal = document.getElementById("videoModal");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.className = "modal fade";
-    modal.id = "videoModal";
-    modal.tabIndex = -1;
-    modal.innerHTML = `
-      <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">動画再生</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body p-0">
-            <video id="modalVideo" class="w-100" controls autoplay style="height:80vh;"></video>
-          </div>
+    <!-- Offcanvas メニュー -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold" id="offcanvasMenuLabel">問題一覧</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-      </div>`;
-    document.body.appendChild(modal);
+        <div class="offcanvas-body p-2" id="questionList">
+            <!-- JSで生成 -->
+        </div>
+    </div>
 
-    modal.addEventListener("hidden.bs.modal", () => {
-      const v = modal.querySelector("#modalVideo");
-      v.pause();
-      v.currentTime = 0;
-      v.src = "";
-    });
-  }
+    <!-- 非表示のファイル入力 -->
+    <input type="file" id="uploadQuizFile" accept="application/json" class="d-none">
+    <input type="file" id="uploadVideoFile" accept="application/json" class="d-none">
 
-  const videoEl = modal.querySelector("#modalVideo");
-  videoEl.src = src;
-  videoEl.load();
+    <!-- モジュール化されたモーダル群 (index.html からコピー) -->
+    <!-- 問題履歴モーダル -->
+    <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen-sm-down modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">問題履歴</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-1">
+                    <div id="historyContainer" class="table-responsive"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  new bootstrap.Modal(modal).show();
-}
+    <!-- 動画履歴モーダル -->
+    <div class="modal fade" id="videoHistoryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen-sm-down modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">動画履歴</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-bordered table-striped mb-0" style="font-size: 0.85rem;">
+                        <thead>
+                            <tr>
+                                <th>動画</th>
+                                <th>回数</th>
+                                <th>最終</th>
+                            </tr>
+                        </thead>
+                        <tbody id="video-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- 結果モーダル -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">結果</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center fs-5" id="resultContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 基本ロジックは index.html から移植
+        const qFrame = document.getElementById("questionFrame");
+        const aFrame = document.getElementById("answerFrame");
+        const titleEl = document.getElementById("currentTitle");
+        const titleStatSpan = document.getElementById("titleQuizStat");
+        const historyContainer = document.getElementById("historyContainer");
+        const offcanvasEl = document.getElementById("offcanvasMenu");
+        let offcanvasInstance;
 
-// ========================
-// 問題履歴 localStorage
-// ========================
-function loadResults() {
-  return JSON.parse(localStorage.getItem("quiz_results") || "{}");
-}
+        let clickedOnce = false;
+        let timerInterval = null;
+        let elapsedSeconds = 0;
 
-function saveResult(file, correct, wrong, timeSec) {
-  const data = loadResults();
-  if (!data[file]) data[file] = [];
-  const total = correct + wrong;
-  const rate = total ? Math.round((correct / total) * 100) : 0;
+        document.addEventListener("DOMContentLoaded", () => {
+            offcanvasInstance = new bootstrap.Offcanvas(offcanvasEl);
 
-  data[file].unshift({
-    correct,
-    wrong,
-    rate,
-    time: timeSec,
-    date: new Date().toLocaleString("ja-JP")
-  });
-
-  if (data[file].length > 10) data[file] = data[file].slice(0, 10);
-
-  localStorage.setItem("quiz_results", JSON.stringify(data));
-  updateMenuHighlight();
-}
-
-function updateMenuHighlight() {
-  const data = loadResults();
-  document.querySelectorAll("#questionList button[data-file]").forEach(btn => {
-    const f = btn.dataset.file.split("/").pop();
-    const records = data[f] || [];
-    let hasPerfect = records.some(r => r.rate === 100);
-    const last = records[0];
-
-    if (hasPerfect) {
-      btn.style.color = "blue";
-    } else if (last && last.wrong > 0) {
-      btn.style.color = "red";
-    } else {
-      btn.style.color = "";
-    }
-  });
-}
-
-
-// ========================
-// iframeロード時の処理
-// ========================
-qFrame.addEventListener("load", ()=> {
-  const doc = qFrame.contentDocument;
-  if(!doc) return;
-
-  const pn = doc.querySelector(".page-number");
-  if (pn) pn.style.display = "none";
-
-  const btn = doc.querySelector("#btn_Answer, #btn_Answer_Text");
-  if(!btn) return;
-
-  hideLabels(doc);
-  startTimer(doc);
-  btn.textContent="回答";
-  clickedOnce=false;
-
-  doc.querySelectorAll('input[type="tel"]').forEach(input => {
-    input.addEventListener('blur', () => {
-      let value = input.value.replace(/,/g, '').trim();
-      if (value === '' || isNaN(value)) return;
-      input.value = Number(value).toLocaleString();
-    });
-    input.addEventListener('input', () => {
-      input.value = input.value.replace(/[^\d,]/g, '');
-    });
-  });
-
-  btn.addEventListener("click", async ()=> {
-    const qFile = qFrame.src.split("/").pop();
-    const aFile = qFrame.src.replace(".html","A.html");
-
-    if (!clickedOnce) {
-      stopTimer();
-      try {
-        const res = await fetch(aFile);
-        const html = await res.text();
-        const parser = new DOMParser();
-        const ansDoc = parser.parseFromString(html,"text/html");
-        let correct=0, wrong=0;
-
-        doc.querySelectorAll("input[id],select[id]").forEach(el=>{
-          const cel = ansDoc.querySelector(`#${el.id}`);
-          if(!cel) return;
-          const v=(el.value||"").replace(/,/g,"").trim();
-          const c=(cel.value||"").replace(/,/g,"").trim();
-
-  // ★ 追加：コンソールに比較内容を出力
-  console.log(
-    `[Check] ID: ${el.id}, Input: "${v}", Answer: "${c}", Result: ${
-      v === c ? "✓ Correct" : "✗ Wrong"
-    }`
-  );
-  
-          el.style.backgroundColor="";
-          if(v===""&&c==="") return;
-
-          if(v===c){
-            el.style.backgroundColor="rgba(0,255,0,0.25)";
-            correct++;
-          } else {
-            el.style.backgroundColor="rgba(255,0,0,0.3)";
-            wrong++;
-          }
+            fetch("data.json")
+                .then(r => r.json())
+                .then(data => buildMenu(data))
+                .catch(err => {
+                    document.getElementById("questionList").innerHTML = `<div class="text-danger">エラー: ${err.message}</div>`;
+                });
         });
 
-        const total = correct+wrong;
-        const rate = total ? Math.round(correct/total*100) : 0;
-        const timeText = formatTime(elapsedSeconds);
+        function buildMenu(data) {
+            const list = document.getElementById("questionList");
+            list.innerHTML = "";
 
-        const resultContent = document.getElementById("resultContent");
-        resultContent.innerHTML = `
-          <div><span class="text-success fw-bold">正解：${correct}</span></div>
-          <div><span class="text-danger fw-bold">不正解：${wrong}</span></div>
-          <div><span class="text-primary fw-bold">正解率：${rate}%</span></div>
-          <div><span class="text-secondary">時間：${timeText}</span></div>
-        `;
-        new bootstrap.Modal(document.getElementById("resultModal")).show();
+            for (const [folder, items] of Object.entries(data)) {
+                const section = document.createElement("div");
+                section.className = "mb-3";
 
-        saveResult(qFile, correct, wrong, elapsedSeconds);
-        btn.textContent = "解説";
-        btn.style.backgroundColor = "#f87171";
-        clickedOnce = true;
-      } catch(e) {
-        alert("正解データ取得失敗");
-      }
-    } else {
-      aFrame.src = aFile;
-      aFrame.onload = ()=> hideLabels(aFrame.contentDocument,true);
-      qFrame.classList.add("d-none");
-      aFrame.classList.remove("d-none");
-    }
-  });
-});
+                const titleWrapper = document.createElement("div");
+                titleWrapper.className = "folder-title d-flex justify-content-between align-items-center mb-2";
+                titleWrapper.innerHTML = `<span>${folder}</span>`;
 
+                let firstVideo = items.find(f => typeof f === "string" && f.toLowerCase().endsWith(".mp4"));
+                if (firstVideo) {
+                    const vBtn = document.createElement("button");
+                    vBtn.className = "btn btn-sm btn-outline-primary video-btn py-0";
+                    vBtn.dataset.video = "data/" + firstVideo;
+                    vBtn.textContent = "動画";
+                    vBtn.onclick = (e) => { e.stopPropagation(); showVideoModal("data/" + firstVideo); };
+                    titleWrapper.appendChild(vBtn);
+                }
+                section.appendChild(titleWrapper);
 
-// ========================
-// タイマー
-// ========================
-function startTimer(doc){
-  const t=doc.getElementById("v_time_all");
-  if(!t) return;
-  stopTimer();
-  elapsedSeconds=0;
-  const upd=()=>t.textContent=formatTime(elapsedSeconds);
-  upd(); timerInterval=setInterval(()=>{elapsedSeconds++;upd();},1000);
-}
+                const btnGroup = document.createElement("div");
+                btnGroup.className = "d-grid gap-1";
 
-function stopTimer(){
-  if(timerInterval) clearInterval(timerInterval);
-  timerInterval=null;
-}
+                items.forEach(item => {
+                    if (typeof item === "string" && !item.toLowerCase().endsWith(".mp4")) {
+                        const btn = document.createElement("button");
+                        btn.className = "btn btn-light btn-sm text-start border";
+                        btn.dataset.file = "data/" + item;
+                        btn.textContent = item.split("/").pop().replace(".html", "");
+                        btn.onclick = () => {
+                            qFrame.src = btn.dataset.file;
+                            aFrame.classList.add("d-none");
+                            qFrame.classList.remove("d-none");
+                            titleEl.textContent = btn.textContent;
+                            clickedOnce = false;
+                            offcanvasInstance.hide(); // メニューを閉じる
+                        };
+                        btnGroup.appendChild(btn);
+                    }
+                });
 
-function formatTime(s){
-  return `${Math.floor(s/60)}分${String(s%60).padStart(2,"0")}秒`;
-}
+                section.appendChild(btnGroup);
+                list.appendChild(section);
+            }
+            updateMenuHighlight();
+            updateVideoButtons();
+            updateMenuBookmarks();
+        }
 
+        // 共通ロジック (localStorage, Timer, etc)
+        function loadVideoHistory() { return JSON.parse(localStorage.getItem("video_history") || "{}"); }
+        function saveVideoHistory(p) {
+            const d = loadVideoHistory();
+            if (!d[p]) d[p] = { watched: true, count: 0, lastWatched: "" };
+            d[p].watched = true; d[p].count++; d[p].lastWatched = new Date().toLocaleString("ja-JP");
+            localStorage.setItem("video_history", JSON.stringify(d));
+        }
+        function updateVideoButtons() {
+            const h = loadVideoHistory();
+            document.querySelectorAll(".video-btn").forEach(b => {
+                if (h[b.dataset.video]?.watched) { b.classList.remove("btn-outline-primary"); b.classList.add("btn-primary"); }
+            });
+        }
 
-// ========================
-// ラベル非表示
-// ========================
-function hideLabels(doc,isAns=false){
-  const c=doc.querySelector("p.cancel#btn_Cancel"); 
-  if(c) c.style.display="none";
+        function showVideoModal(src) {
+            saveVideoHistory(src);
+            updateVideoButtons();
+            let m = document.getElementById("videoModal");
+            if (!m) {
+                m = document.createElement("div"); m.className = "modal fade"; m.id = "videoModal";
+                m.innerHTML = `<div class="modal-dialog modal-fullscreen modal-dialog-centered"><div class="modal-content text-bg-dark">
+      <div class="modal-header border-0"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body p-0 d-flex align-items-center"><video id="modalVideo" class="w-100" controls autoplay></video></div>
+    </div></div>`;
+                document.body.appendChild(m);
+                m.addEventListener("hidden.bs.modal", () => { const v = m.querySelector("video"); v.pause(); v.src = ""; });
+            }
+            m.querySelector("video").src = src;
+            new bootstrap.Modal(m).show();
+        }
 
-  const r=doc.querySelector("div.result"); 
-  if(r) r.style.display="none";
+        function loadResults() { return JSON.parse(localStorage.getItem("quiz_results") || "{}"); }
+        function saveResult(file, correct, wrong, timeSec) {
+            const d = loadResults();
+            if (!d[file]) d[file] = [];
+            d[file].unshift({ correct, wrong, rate: Math.round((correct / (correct + wrong || 1)) * 100), time: timeSec, date: new Date().toLocaleString("ja-JP") });
+            if (d[file].length > 10) d[file] = d[file].slice(0, 10);
+            localStorage.setItem("quiz_results", JSON.stringify(d));
+            updateMenuHighlight();
+        }
 
-  if(isAns){
-    const n=doc.querySelector("h2#btn_Answer"); 
-    if(n)n.style.display="none";
-  }
-}
+        function updateMenuHighlight() {
+            const d = loadResults();
+            document.querySelectorAll("#questionList button[data-file]").forEach(b => {
+                const f = b.dataset.file.split("/").pop();
+                const r = d[f] || [];
+                if (r.some(x => x.rate === 100)) b.style.color = "blue";
+                else if (r[0]?.wrong > 0) b.style.color = "red";
+                else b.style.color = "";
+            });
+        }
 
+        qFrame.addEventListener("load", () => {
+            const doc = qFrame.contentDocument; if (!doc) return;
+            const pn = doc.querySelector(".page-number"); if (pn) pn.style.display = "none";
+            const btn = doc.querySelector("#btn_Answer, #btn_Answer_Text"); if (!btn) return;
 
-// ========================
-// 問題履歴モーダル 表示時処理
-// ========================
-document.getElementById("historyModal").addEventListener("show.bs.modal", () => {
-  const data = loadResults();
-  let html =
-    '<table class="table table-sm table-bordered"><thead><tr>' +
-    '<th>問題</th><th>正解</th><th>不正解</th><th>正解率</th><th>時間</th><th>日付</th></tr></thead><tbody>';
+            hideLabels(doc); startTimer(doc);
+            btn.textContent = "回答"; clickedOnce = false;
 
-  for (const [file, records] of Object.entries(data)) {
-    records.forEach(r => {
-      html += `<tr>
-        <td>${file}</td>
-        <td>${r.correct}</td>
-        <td>${r.wrong}</td>
-        <td>${r.rate}%</td>
-        <td>${formatTime(r.time)}</td>
-        <td>${r.date}</td>
-      </tr>`;
-    });
-  }
+            // 数値フォーマット & ブックマーク表示
+            const qFile = qFrame.src.split("/").pop();
+            const stats = getQuizStats(qFile);
+            titleStatSpan.textContent = stats.count > 0 ? `回答: ${stats.count}回 / 平均: ${stats.avgRate}%` : "未回答";
 
-  html += '</tbody></table>';
-  historyContainer.innerHTML = html;
-});
+            const bookmarkBtn = doc.getElementById("btnElearningBookmark");
+            if (bookmarkBtn) {
+                const bms = loadBookmarks();
+                bookmarkBtn.style.backgroundColor = bms.includes(qFile) ? "yellow" : "";
+                bookmarkBtn.onclick = () => {
+                    let cur = loadBookmarks();
+                    if (cur.includes(qFile)) { cur = cur.filter(x => x !== qFile); bookmarkBtn.style.backgroundColor = ""; }
+                    else { cur.push(qFile); bookmarkBtn.style.backgroundColor = "yellow"; }
+                    saveBookmarks(cur); updateMenuBookmarks();
+                };
+            }
 
+            btn.onclick = async () => {
+                const aFile = qFrame.src.replace(".html", "A.html");
+                if (!clickedOnce) {
+                    stopTimer();
+                    try {
+                        const res = await fetch(aFile); const html = await res.text();
+                        const ansDoc = new DOMParser().parseFromString(html, "text/html");
+                        let c = 0, w = 0;
+                        doc.querySelectorAll("input[id],select[id]").forEach(el => {
+                            const cel = ansDoc.querySelector(`#${el.id}`); if (!cel) return;
+                            const v = (el.value || "").replace(/,/g, "").trim(), target = (cel.value || "").replace(/,/g, "").trim();
+                            if (v === "" && target === "") return;
+                            if (v === target) { el.style.backgroundColor = "rgba(0,255,0,0.2)"; c++; }
+                            else { el.style.backgroundColor = "rgba(255,0,0,0.2)"; w++; }
+                        });
+                        const rContent = document.getElementById("resultContent");
+                        rContent.innerHTML = `<b class="text-success">正解:${c}</b> / <b class="text-danger">不正解:${w}</b><br><small>時間:${formatTime(elapsedSeconds)}</small>`;
+                        new bootstrap.Modal(document.getElementById("resultModal")).show();
+                        saveResult(qFile, c, w, elapsedSeconds);
+                        btn.textContent = "解説"; clickedOnce = true;
+                    } catch (e) { alert("正解取得失敗: " + e); }
+                } else {
+                    aFrame.src = aFile; aFrame.onload = () => hideLabels(aFrame.contentDocument, true);
+                    qFrame.classList.add("d-none"); aFrame.classList.remove("d-none");
+                }
+            };
+        });
 
-// ========================
-// 動画履歴モーダル 表示時処理
-// ========================
-document.getElementById("videoHistoryModal").addEventListener("show.bs.modal", () => {
-  let history = JSON.parse(localStorage.getItem("video_history") || "{}");
+        function hideLabels(doc, isA = false) {
+            ["p.cancel#btn_Cancel", "div.result"].forEach(s => { const x = doc.querySelector(s); if (x) x.style.display = "none"; });
+            if (isA) { const a = doc.querySelector("h2#btn_Answer"); if (a) a.style.display = "none"; }
+        }
 
-  const tbody = document.getElementById("video-history-body");
-  tbody.innerHTML = "";
+        function startTimer(doc) {
+            const t = doc.getElementById("v_time_all"); if (!t) return;
+            stopTimer(); elapsedSeconds = 0;
+            const f = () => t.textContent = formatTime(elapsedSeconds);
+            f(); timerInterval = setInterval(() => { elapsedSeconds++; f(); }, 1000);
+        }
+        function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
+        function formatTime(s) { return `${Math.floor(s / 60)}分${String(s % 60).padStart(2, "0")}秒`; }
 
-  for (let title in history) {
-    const h = history[title];
-    tbody.insertAdjacentHTML(
-      "beforeend",
-      `<tr>
-        <td>${title}</td>
-        <td>${h.count}</td>
-        <td>${h.lastWatched}</td>
-      </tr>`
-    );
-  }
-});
+        function loadBookmarks() { return JSON.parse(localStorage.getItem("quiz_bookmarks") || "[]"); }
+        function saveBookmarks(b) { localStorage.setItem("quiz_bookmarks", JSON.stringify(b)); }
+        function updateMenuBookmarks() {
+            const bms = loadBookmarks();
+            document.querySelectorAll("#questionList button[data-file]").forEach(b => {
+                const f = b.dataset.file.split("/").pop();
+                b.style.backgroundColor = bms.includes(f) ? "yellow" : "";
+            });
+        }
+        function getQuizStats(f) {
+            const d = loadResults()[f] || [];
+            if (!d.length) return { count: 0, avgRate: 0 };
+            return { count: d.length, avgRate: Math.round(d.reduce((s, r) => s + r.rate, 0) / d.length) };
+        }
 
+        // 履歴モーダルイベント
+        document.getElementById("historyModal").addEventListener("show.bs.modal", () => {
+            const d = loadResults();
+            let h = '<table class="table table-sm table-condensed" style="font-size:0.75rem"><thead><tr><th>問題</th><th>率</th><th>時間</th><th>日</th></tr></thead><tbody>';
+            for (const [f, recs] of Object.entries(d)) {
+                recs.forEach(r => { h += `<tr><td>${f.replace('.html', '')}</td><td>${r.rate}%</td><td>${formatTime(r.time)}</td><td>${r.date.split(' ')[0]}</td></tr>`; });
+            }
+            document.getElementById("historyContainer").innerHTML = h + '</tbody></table>';
+        });
+        document.getElementById("videoHistoryModal").addEventListener("show.bs.modal", () => {
+            const h = loadVideoHistory();
+            let row = "";
+            for (let t in h) { row += `<tr><td>${t}</td><td>${h[t].count}</td><td>${h[t].lastWatched.split(' ')[0]}</td></tr>`; }
+            document.getElementById("video-history-body").innerHTML = row;
+        });
 
-// ========================
-// 追加機能：JSON ダウンロード/アップロード
-// ========================
+        // JSON DL/UP (簡易版)
+        document.getElementById("downloadQuizBtn").onclick = () => downloadJSON("quiz_results.json", loadResults());
+        document.getElementById("downloadVideoBtn").onclick = () => downloadJSON("video_history.json", loadVideoHistory());
+        function downloadJSON(n, d) {
+            const b = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
+            const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = n; a.click();
+        }
+        document.getElementById("uploadQuizBtn").onclick = () => document.getElementById("uploadQuizFile").click();
+        document.getElementById("uploadVideoBtn").onclick = () => document.getElementById("uploadVideoFile").click();
+        document.getElementById("uploadQuizFile").onchange = (e) => handleUpload(e.target, "quiz_results", updateMenuHighlight);
+        document.getElementById("uploadVideoFile").onchange = (e) => handleUpload(e.target, "video_history", updateVideoButtons);
+        async function handleUpload(el, k, cb) {
+            const f = el.files[0]; if (!f) return;
+            const j = JSON.parse(await f.text()); localStorage.setItem(k, JSON.stringify(j));
+            if (cb) cb(); alert("完了"); el.value = "";
+        }
 
-// ダウンロードユーティリティ
-function downloadJSON(filename, data) {
-  try {
-    const blob = new Blob([JSON.stringify(data || {}, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    alert("ダウンロードに失敗しました: " + e);
-  }
-}
-
-// アップロード処理ユーティリティ
-async function handleUploadJSON(inputEl, storageKey, callbackAfterSave = null) {
-  const file = inputEl.files[0];
-  if (!file) return;
-
-  try {
-    const text = await file.text();
-    const json = JSON.parse(text);
-
-    // バリデーション（浅く）
-    if (typeof json !== "object") {
-      throw new Error("不正なJSON形式です。オブジェクトを期待しています。");
-    }
-
-    localStorage.setItem(storageKey, JSON.stringify(json));
-    if (typeof callbackAfterSave === "function") callbackAfterSave();
-
-    // モーダルが開いている場合、内容を即座に反映
-    if (storageKey === "quiz_results") {
-      // もし履歴モーダル表示中なら更新
-      const modalEl = document.getElementById("historyModal");
-      if (modalEl && modalEl.classList.contains("show")) {
-        modalEl.dispatchEvent(new Event('show.bs.modal'));
-      }
-    } else if (storageKey === "video_history") {
-      const modalEl = document.getElementById("videoHistoryModal");
-      if (modalEl && modalEl.classList.contains("show")) {
-        modalEl.dispatchEvent(new Event('show.bs.modal'));
-      }
-    }
-
-    alert("アップロード完了しました。");
-  } catch (e) {
-    alert("ファイル読み込みエラー: " + e.message);
-  } finally {
-    inputEl.value = "";
-  }
-}
-
-// ダウンロードボタンイベント
-document.getElementById("downloadQuizBtn").addEventListener("click", () => {
-  const data = loadResults();
-  const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,"");
-  downloadJSON(`quiz_results_backup_${dateStr}.json`, data);
-});
-document.getElementById("downloadVideoBtn").addEventListener("click", () => {
-  const data = loadVideoHistory();
-  const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,"");
-  downloadJSON(`video_history_backup_${dateStr}.json`, data);
-});
-
-// アップロードボタンイベント（ファイル選択トリガー）
-document.getElementById("uploadQuizBtn").addEventListener("click", () => {
-  document.getElementById("uploadQuizFile").click();
-});
-document.getElementById("uploadVideoBtn").addEventListener("click", () => {
-  document.getElementById("uploadVideoFile").click();
-});
-
-// ファイル選択後の処理
-document.getElementById("uploadQuizFile").addEventListener("change", () => {
-  handleUploadJSON(
-    document.getElementById("uploadQuizFile"),
-    "quiz_results",
-    updateMenuHighlight
-  );
-});
-document.getElementById("uploadVideoFile").addEventListener("change", () => {
-  handleUploadJSON(
-    document.getElementById("uploadVideoFile"),
-    "video_history",
-    updateVideoButtons
-  );
-});
-
-
-// ========================
-// 既存の補助ボタンの処理（再読み込み・入力クリア等）
-// ========================
-
-// 再読み込み（メニューを再取得）
-document.getElementById("reloadBtn").addEventListener("click", () => {
-  fetch("data.json")
-    .then(r => {
-      if (!r.ok) throw new Error("data.json 読み込み失敗");
-      return r.json();
-    })
-    .then(data => buildMenu(data))
-    .catch(err => {
-      alert("再読み込み失敗: " + err.message);
-    });
-});
-
-// 入力クリア（iframe内の input/select をリセット）
-document.getElementById("clearBtn").addEventListener("click", () => {
-  const doc = qFrame.contentDocument;
-  if (!doc) return;
-  doc.querySelectorAll("input, select, textarea").forEach(el => {
-    if (el.type === "checkbox" || el.type === "radio") {
-      el.checked = false;
-    } else {
-      el.value = "";
-    }
-    el.style.backgroundColor = "";
-  });
-});
-
-// ========================
-// ブックマーク機能
-// ========================
-
-// localStorageキー
-const BOOKMARK_KEY = "quiz_bookmarks";
-
-// ブックマークの取得
-function loadBookmarks() {
-  return JSON.parse(localStorage.getItem(BOOKMARK_KEY) || "[]");
-}
-
-// ブックマークの保存
-function saveBookmarks(bookmarks) {
-  localStorage.setItem(BOOKMARK_KEY, JSON.stringify(bookmarks));
-}
-
-// iframeロード時にブックマークボタンを設定
-qFrame.addEventListener("load", () => {
-  const doc = qFrame.contentDocument;
-  if (!doc) return;
-
-  const bookmarkBtn = doc.getElementById("btnElearningBookmark");
-  if (!bookmarkBtn) return;
-
-  const qFile = qFrame.src.split("/").pop();
-  const stats = getQuizStats(qFile);
-
-  const statEl = document.getElementById("titleQuizStat");
-  if (statEl) {
-    statEl.textContent =
-      stats.count > 0
-        ? `｜ 回答: ${stats.count}回 / 平均正解率: ${stats.avgRate}%`
-        : "｜ 未回答";
-  }
-  
-  const bookmarks = loadBookmarks();
-  if (bookmarks.includes(qFile)) {
-    bookmarkBtn.style.backgroundColor = "yellow";
-  } else {
-    bookmarkBtn.style.backgroundColor = "";
-  }
-
-  bookmarkBtn.addEventListener("click", () => {
-    let current = loadBookmarks();
-    if (current.includes(qFile)) {
-      // ブックマーク解除
-      current = current.filter(f => f !== qFile);
-      bookmarkBtn.style.backgroundColor = "";
-    } else {
-      // ブックマーク追加
-      current.push(qFile);
-      bookmarkBtn.style.backgroundColor = "yellow";
-    }
-    saveBookmarks(current);
-    updateMenuBookmarks();
-  });
-
-  updateMenuBookmarks();
-});
-
-// 左メニューのボタンをブックマーク状態に応じて黄色に
-function updateMenuBookmarks() {
-  const bookmarks = loadBookmarks();
-  document.querySelectorAll("#questionList button[data-file]").forEach(btn => {
-    const f = btn.dataset.file.split("/").pop();
-    if (bookmarks.includes(f)) {
-      btn.style.backgroundColor = "yellow";
-    } else {
-      // 既存の色判定も残す
-      const data = loadResults();
-      const records = data[f] || [];
-      let hasPerfect = records.some(r => r.rate === 100);
-      const last = records[0];
-
-      if (hasPerfect) {
-        btn.style.color = "blue";
-      } else if (last && last.wrong > 0) {
-        btn.style.color = "red";
-      } else {
-        btn.style.color = "";
-      }
-
-      btn.style.backgroundColor = ""; // ブックマーク以外は背景色なし
-    }
-  });
-}
-
-function getQuizStats(fileName) {
-  const data = loadResults();
-  const records = data[fileName] || [];
-
-  if (records.length === 0) {
-    return { count: 0, avgRate: 0 };
-  }
-
-  const count = records.length;
-  const avgRate = Math.round(
-    records.reduce((sum, r) => sum + (r.rate || 0), 0) / count
-  );
-
-  return { count, avgRate };
-}
-
-</script>
+        document.getElementById("reloadBtn").onclick = () => location.reload();
+        document.getElementById("clearBtn").onclick = () => {
+            const doc = qFrame.contentDocument; if (!doc) return;
+            doc.querySelectorAll("input, select").forEach(el => { el.value = ""; el.style.backgroundColor = ""; });
+        };
+    </script>
 </body>
+
 </html>
