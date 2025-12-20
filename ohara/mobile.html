@@ -4,50 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>問題集 - PC版</title>
+    <title>問題集 - モバイル版</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        :root {
-            --sidebar-width: 300px;
-        }
-
         body {
             height: 100dvh;
             overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* PC版サイドバーのスタイル */
-        @media (min-width: 992px) {
-            .offcanvas-lg {
-                width: var(--sidebar-width) !important;
-                border-right: 1px solid #dee2e6;
-                visibility: visible !important;
-                transform: none !important;
-                position: relative !important;
-                flex-shrink: 0;
-                height: 100dvh !important;
-                /* 全高を画面に固定 */
-                display: flex !important;
-                flex-direction: column !important;
-            }
-
-            .offcanvas-body {
-                overflow-y: auto !important;
-                /* 縦スクロールを有効化 */
-                flex-grow: 1;
-                display: block !important;
-            }
-
-            .main-content {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                height: 100dvh;
-                overflow: hidden;
-            }
+            display: flex;
+            flex-direction: column;
         }
 
         #questionFrame,
@@ -65,7 +30,6 @@
         #questionList .btn {
             text-align: left;
             margin-bottom: 2px;
-            font-size: 0.9rem;
         }
 
         .folder-title {
@@ -74,7 +38,6 @@
             margin-top: 10px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 0.9rem;
         }
 
         #titleQuizStat {
@@ -82,88 +45,60 @@
             font-size: 0.8rem;
             color: #6c757d;
         }
-
-        /* 動画をウィンドウ内に収める設定 */
-        #modalVideo {
-            max-width: 100%;
-            max-height: 80vh;
-            /* 画面内に収まるように制限 */
-            object-fit: contain;
-        }
-
-        /* スクロールバーのカスタマイズ */
-        #questionList::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #questionList::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
     </style>
 </head>
 
 <body class="bg-light">
 
-    <div class="d-flex h-100">
-        <!-- サイドバー (Offcanvas-lg) -->
-        <div class="offcanvas-lg offcanvas-start bg-white" tabindex="-1" id="offcanvasMenu"
-            aria-labelledby="offcanvasMenuLabel">
-            <div class="offcanvas-header border-bottom flex-shrink-0">
-                <h5 class="offcanvas-title fw-bold" id="offcanvasMenuLabel">問題一覧</h5>
-                <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas"
-                    data-bs-target="#offcanvasMenu" aria-label="Close"></button>
+    <!-- ヘッダー -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2">
+        <div class="container-fluid p-0">
+            <button class="btn btn-outline-light me-2" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="text-white text-truncate flex-grow-1">
+                <div id="currentTitle" class="fw-bold" style="font-size: 0.9rem;">問題を選択してください</div>
+                <div id="titleQuizStat"></div>
             </div>
-            <div class="offcanvas-body p-2" id="questionList">
-                <!-- JSでコンテンツ生成。縦スクロールはCSSで制御 -->
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    ツール
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><button class="dropdown-item" data-bs-toggle="modal"
+                            data-bs-target="#historyModal">問題履歴</button></li>
+                    <li><button class="dropdown-item" data-bs-toggle="modal"
+                            data-bs-target="#videoHistoryModal">動画履歴</button></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><button id="reloadBtn" class="dropdown-item">再読み込み</button></li>
+                    <li><button id="clearBtn" class="dropdown-item text-danger">入力クリア</button></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><button id="downloadQuizBtn" class="dropdown-item">回答履歴DL</button></li>
+                    <li><button id="uploadQuizBtn" class="dropdown-item">回答履歴UP</button></li>
+                    <li><button id="downloadVideoBtn" class="dropdown-item">動画履歴DL</button></li>
+                    <li><button id="uploadVideoBtn" class="dropdown-item">動画履歴UP</button></li>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <!-- メインコンテンツ -->
-        <div class="main-content">
-            <!-- ヘッダー -->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2 flex-shrink-0">
-                <div class="container-fluid p-0">
-                    <button class="btn btn-outline-light me-2 d-lg-none" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasMenu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="text-white text-truncate flex-grow-1">
-                        <div id="currentTitle" class="fw-bold" style="font-size: 0.9rem;">問題を選択してください</div>
-                        <div id="titleQuizStat"></div>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown">
-                            ツール
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><button class="dropdown-item" data-bs-toggle="modal"
-                                    data-bs-target="#historyModal">問題履歴</button></li>
-                            <li><button class="dropdown-item" data-bs-toggle="modal"
-                                    data-bs-target="#videoHistoryModal">動画履歴</button></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><button id="reloadBtn" class="dropdown-item">再読み込み</button></li>
-                            <li><button id="clearBtn" class="dropdown-item text-danger">入力クリア</button></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><button id="downloadQuizBtn" class="dropdown-item">回答履歴DL</button></li>
-                            <li><button id="uploadQuizBtn" class="dropdown-item">回答履歴UP</button></li>
-                            <li><button id="downloadVideoBtn" class="dropdown-item">動画履歴DL</button></li>
-                            <li><button id="uploadVideoBtn" class="dropdown-item">動画履歴UP</button></li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+    <!-- メインエリア (iframe) -->
+    <iframe id="questionFrame" class="bg-white"></iframe>
+    <iframe id="answerFrame" class="bg-white d-none"></iframe>
 
-            <!-- iframe エリア -->
-            <div class="flex-grow-1 d-flex flex-column overflow-hidden">
-                <iframe id="questionFrame" class="bg-white"></iframe>
-                <iframe id="answerFrame" class="bg-white d-none"></iframe>
-            </div>
+    <!-- Offcanvas メニュー -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold" id="offcanvasMenuLabel">問題一覧</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-2" id="questionList">
+            <!-- JSで生成 -->
         </div>
     </div>
 
@@ -171,7 +106,8 @@
     <input type="file" id="uploadQuizFile" accept="application/json" class="d-none">
     <input type="file" id="uploadVideoFile" accept="application/json" class="d-none">
 
-    <!-- モーダル群 -->
+    <!-- モジュール化されたモーダル群 (index.html からコピー) -->
+    <!-- 問題履歴モーダル -->
     <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen-sm-down modal-lg modal-dialog-scrollable">
             <div class="modal-content">
@@ -186,6 +122,7 @@
         </div>
     </div>
 
+    <!-- 動画履歴モーダル -->
     <div class="modal fade" id="videoHistoryModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen-sm-down modal-lg">
             <div class="modal-content">
@@ -209,6 +146,7 @@
         </div>
     </div>
 
+    <!-- 結果モーダル -->
     <div class="modal fade" id="resultModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -224,24 +162,9 @@
         </div>
     </div>
 
-    <!-- 動画用モーダル -->
-    <div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen modal-dialog-centered">
-            <div class="modal-content text-bg-dark border-0">
-                <div class="modal-header border-0 pb-0 flex-shrink-0">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div
-                    class="modal-body p-0 d-flex flex-column align-items-center justify-content-center overflow-hidden flex-grow-1">
-                    <video id="modalVideo" controls autoplay></video>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // 基本ロジックは index.html から移植
         const qFrame = document.getElementById("questionFrame");
         const aFrame = document.getElementById("answerFrame");
         const titleEl = document.getElementById("currentTitle");
@@ -277,7 +200,7 @@
                 titleWrapper.className = "folder-title d-flex justify-content-between align-items-center mb-2";
                 titleWrapper.innerHTML = `<span>${folder}</span>`;
 
-                let firstVideo = (items || []).find(f => typeof f === "string" && f.toLowerCase().endsWith(".mp4"));
+                let firstVideo = items.find(f => typeof f === "string" && f.toLowerCase().endsWith(".mp4"));
                 if (firstVideo) {
                     const vBtn = document.createElement("button");
                     vBtn.className = "btn btn-sm btn-outline-primary video-btn py-0";
@@ -291,7 +214,7 @@
                 const btnGroup = document.createElement("div");
                 btnGroup.className = "d-grid gap-1";
 
-                (items || []).forEach(item => {
+                items.forEach(item => {
                     if (typeof item === "string" && !item.toLowerCase().endsWith(".mp4")) {
                         const btn = document.createElement("button");
                         btn.className = "btn btn-light btn-sm text-start border";
@@ -303,10 +226,7 @@
                             qFrame.classList.remove("d-none");
                             titleEl.textContent = btn.textContent;
                             clickedOnce = false;
-
-                            if (window.innerWidth < 992) {
-                                offcanvasInstance.hide();
-                            }
+                            offcanvasInstance.hide(); // メニューを閉じる
                         };
                         btnGroup.appendChild(btn);
                     }
@@ -320,6 +240,7 @@
             updateMenuBookmarks();
         }
 
+        // 共通ロジック (localStorage, Timer, etc)
         function loadVideoHistory() { return JSON.parse(localStorage.getItem("video_history") || "{}"); }
         function saveVideoHistory(p) {
             const d = loadVideoHistory();
@@ -338,17 +259,17 @@
             saveVideoHistory(src);
             updateVideoButtons();
             let m = document.getElementById("videoModal");
+            if (!m) {
+                m = document.createElement("div"); m.className = "modal fade"; m.id = "videoModal";
+                m.innerHTML = `<div class="modal-dialog modal-fullscreen modal-dialog-centered"><div class="modal-content text-bg-dark">
+      <div class="modal-header border-0"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body p-0 d-flex align-items-center"><video id="modalVideo" class="w-100" controls autoplay></video></div>
+    </div></div>`;
+                document.body.appendChild(m);
+                m.addEventListener("hidden.bs.modal", () => { const v = m.querySelector("video"); v.pause(); v.src = ""; });
+            }
             m.querySelector("video").src = src;
             new bootstrap.Modal(m).show();
-
-            if (!m.dataset.listenerAdded) {
-                m.addEventListener("hidden.bs.modal", () => {
-                    const v = m.querySelector("video");
-                    v.pause();
-                    v.src = "";
-                });
-                m.dataset.listenerAdded = "true";
-            }
         }
 
         function loadResults() { return JSON.parse(localStorage.getItem("quiz_results") || "{}"); }
@@ -380,6 +301,7 @@
             hideLabels(doc); startTimer(doc);
             btn.textContent = "回答"; clickedOnce = false;
 
+            // 数値フォーマット & ブックマーク表示
             const qFile = qFrame.src.split("/").pop();
             const stats = getQuizStats(qFile);
             titleStatSpan.textContent = stats.count > 0 ? `回答: ${stats.count}回 / 平均: ${stats.avgRate}%` : "未回答";
@@ -453,6 +375,7 @@
             return { count: d.length, avgRate: Math.round(d.reduce((s, r) => s + r.rate, 0) / d.length) };
         }
 
+        // 履歴モーダルイベント
         document.getElementById("historyModal").addEventListener("show.bs.modal", () => {
             const d = loadResults();
             let h = '<table class="table table-sm table-condensed" style="font-size:0.75rem"><thead><tr><th>問題</th><th>率</th><th>時間</th><th>日</th></tr></thead><tbody>';
@@ -468,6 +391,7 @@
             document.getElementById("video-history-body").innerHTML = row;
         });
 
+        // JSON DL/UP (簡易版)
         document.getElementById("downloadQuizBtn").onclick = () => downloadJSON("quiz_results.json", loadResults());
         document.getElementById("downloadVideoBtn").onclick = () => downloadJSON("video_history.json", loadVideoHistory());
         function downloadJSON(n, d) {
