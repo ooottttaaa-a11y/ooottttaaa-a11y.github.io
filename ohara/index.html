@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>問題集 - PC版</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no, viewport-fit=cover">
+    <title>問題集</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -12,28 +13,46 @@
             --sidebar-width: 300px;
         }
 
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
         body {
-            height: 100dvh;
-            overflow: hidden;
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
+            overflow: hidden;
+            -webkit-text-size-adjust: 100%;
+            /* iOSのテキスト自動サイズ調整を抑制 */
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
         }
 
         /* 共通レイアウト構造 */
         .main-wrapper {
             display: flex;
+            flex: 1;
+            width: 100vw;
             height: 100%;
-            width: 100%;
+            overflow: hidden;
         }
 
         .main-content {
-            flex-grow: 1;
+            flex: 1;
             display: flex;
             flex-direction: column;
             height: 100%;
-            overflow: hidden;
             width: 100%;
-            /* モバイルで全幅を確保 */
+            min-width: 0;
+            overflow: hidden;
         }
 
         /* PC版サイドバーのスタイル (Desktop only) */
@@ -48,6 +67,7 @@
                 height: 100% !important;
                 display: flex !important;
                 flex-direction: column !important;
+                background-color: #fff !important;
             }
 
             .offcanvas-body {
@@ -61,7 +81,10 @@
         #answerFrame {
             flex: 1;
             width: 100%;
+            height: 100%;
             border: none;
+            display: block;
+            background-color: #fff;
         }
 
         .page-number {
@@ -73,10 +96,11 @@
             text-align: left;
             margin-bottom: 2px;
             font-size: 0.9rem;
+            white-space: normal;
         }
 
         .folder-title {
-            background-color: #f8f9fa;
+            background-color: #e9ecef;
             padding: 8px;
             margin-top: 10px;
             border-radius: 4px;
@@ -86,7 +110,7 @@
 
         #titleQuizStat {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #6c757d;
         }
 
@@ -97,63 +121,58 @@
             object-fit: contain;
         }
 
-        /* スクロールバーのカスタマイズ */
-        #questionList::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #questionList::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-
         /* 電卓ボタン（固定） */
         #calcToggleBtn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
-            z-index: 1050;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1060;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            padding: 0;
+            border: none;
         }
 
         /* 電卓UI用スタイル */
         .calculator {
-            max-width: 320px;
+            max-width: 100%;
+            width: 300px;
             margin: 0 auto;
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 8px;
+            background: #eee;
+            padding: 12px;
+            border-radius: 12px;
         }
 
         .calc-display {
             width: 100%;
-            height: 50px;
-            font-size: 1.5rem;
+            height: 60px;
+            font-size: 1.8rem;
             text-align: right;
-            margin-bottom: 10px;
-            padding: 5px 10px;
+            margin-bottom: 12px;
+            padding: 10px;
             background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
         }
 
         .calc-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            gap: 8px;
         }
 
         .calc-grid .btn {
             height: 50px;
             font-size: 1.2rem;
             font-weight: bold;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -177,7 +196,7 @@
         <!-- メインコンテンツ -->
         <div class="main-content">
             <!-- ヘッダー -->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2 flex-shrink-0">
+            <nav class="navbar navbar-expand navbar-dark bg-dark p-2 flex-shrink-0">
                 <div class="container-fluid p-0">
                     <button class="btn btn-outline-light me-2 d-lg-none" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasMenu">
@@ -215,9 +234,9 @@
             </nav>
 
             <!-- iframe エリア -->
-            <div class="flex-grow-1 d-flex flex-column overflow-hidden">
-                <iframe id="questionFrame" class="bg-white"></iframe>
-                <iframe id="answerFrame" class="bg-white d-none"></iframe>
+            <div class="flex-grow-1 d-flex flex-column overflow-hidden position-relative">
+                <iframe id="questionFrame"></iframe>
+                <iframe id="answerFrame" class="d-none"></iframe>
             </div>
         </div>
     </div>
