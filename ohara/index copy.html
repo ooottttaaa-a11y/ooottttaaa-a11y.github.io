@@ -100,55 +100,6 @@
             background: #ccc;
             border-radius: 3px;
         }
-
-        /* 電卓ボタン（固定） */
-        #calcToggleBtn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            z-index: 1050;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        /* 電卓UI用スタイル */
-        .calculator {
-            max-width: 320px;
-            margin: 0 auto;
-            background: #f4f4f4;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .calc-display {
-            width: 100%;
-            height: 50px;
-            font-size: 1.5rem;
-            text-align: right;
-            margin-bottom: 10px;
-            padding: 5px 10px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .calc-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-        }
-
-        .calc-grid .btn {
-            height: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
     </style>
 </head>
 
@@ -212,50 +163,6 @@
             <div class="flex-grow-1 d-flex flex-column overflow-hidden">
                 <iframe id="questionFrame" class="bg-white"></iframe>
                 <iframe id="answerFrame" class="bg-white d-none"></iframe>
-            </div>
-        </div>
-    </div>
-
-    <!-- 電卓トグルボタン -->
-    <button id="calcToggleBtn" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#calcOffcanvas">
-        🧮
-    </button>
-
-    <!-- 電卓オフキャンバス -->
-    <div class="offcanvas offcanvas-bottom h-auto" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
-        id="calcOffcanvas" aria-labelledby="calcOffcanvasLabel">
-        <div class="offcanvas-header border-bottom py-2">
-            <h6 class="offcanvas-title fw-bold" id="calcOffcanvasLabel">電卓</h6>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body p-2" style="background-color: #f8f9fa;">
-            <div class="calculator shadow-sm">
-                <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
-                <div class="calc-grid">
-                    <button class="btn btn-danger" onclick="calcClear()">C</button>
-                    <button class="btn btn-secondary" onclick="calcBack()">BS</button>
-                    <button class="btn btn-secondary" onclick="calcAppend('/')">÷</button>
-                    <button class="btn btn-secondary" onclick="calcAppend('*')">×</button>
-
-                    <button class="btn btn-light" onclick="calcAppend('7')">7</button>
-                    <button class="btn btn-light" onclick="calcAppend('8')">8</button>
-                    <button class="btn btn-light" onclick="calcAppend('9')">9</button>
-                    <button class="btn btn-secondary" onclick="calcAppend('-')">-</button>
-
-                    <button class="btn btn-light" onclick="calcAppend('4')">4</button>
-                    <button class="btn btn-light" onclick="calcAppend('5')">5</button>
-                    <button class="btn btn-light" onclick="calcAppend('6')">6</button>
-                    <button class="btn btn-secondary" onclick="calcAppend('+')">+</button>
-
-                    <button class="btn btn-light" onclick="calcAppend('1')">1</button>
-                    <button class="btn btn-light" onclick="calcAppend('2')">2</button>
-                    <button class="btn btn-light" onclick="calcAppend('3')">3</button>
-                    <button class="btn btn-success" onclick="calcEqual()" style="grid-row: span 2;">=</button>
-
-                    <button class="btn btn-light" onclick="calcAppend('0')" style="grid-column: span 2;">0</button>
-                    <button class="btn btn-light" onclick="calcAppend('.')">.</button>
-                </div>
             </div>
         </div>
     </div>
@@ -357,26 +264,6 @@
                     document.getElementById("questionList").innerHTML = `<div class="text-danger">エラー: ${err.message}</div>`;
                 });
         });
-
-        // 電卓ロジック
-        const calcDisplay = document.getElementById("calcDisplay");
-        function calcAppend(val) {
-            if (calcDisplay.value === "0" && val !== ".") calcDisplay.value = val;
-            else calcDisplay.value += val;
-        }
-        function calcClear() { calcDisplay.value = "0"; }
-        function calcBack() {
-            calcDisplay.value = calcDisplay.value.slice(0, -1);
-            if (calcDisplay.value === "") calcDisplay.value = "0";
-        }
-        function calcEqual() {
-            try {
-                const expr = calcDisplay.value.replace(/[^0-9+\-*/.]/g, "");
-                calcDisplay.value = eval(expr);
-            } catch (e) {
-                calcDisplay.value = "Error";
-            }
-        }
 
         function buildMenu(data) {
             const list = document.getElementById("questionList");
