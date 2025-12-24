@@ -226,8 +226,6 @@
                             </li>
                             <li><button id="downloadQuizBtn" class="dropdown-item">回答履歴DL</button></li>
                             <li><button id="uploadQuizBtn" class="dropdown-item">回答履歴UP</button></li>
-                            <li><button id="downloadBookmarkBtn" class="dropdown-item">お気に入りDL</button></li>
-                            <li><button id="uploadBookmarkBtn" class="dropdown-item">お気に入りUP</button></li>
                             <li><button id="downloadVideoBtn" class="dropdown-item">動画履歴DL</button></li>
                             <li><button id="uploadVideoBtn" class="dropdown-item">動画履歴UP</button></li>
                         </ul>
@@ -289,7 +287,6 @@
 
     <!-- 非表示のファイル入力 -->
     <input type="file" id="uploadQuizFile" accept="application/json" class="d-none">
-    <input type="file" id="uploadBookmarkFile" accept="application/json" class="d-none">
     <input type="file" id="uploadVideoFile" accept="application/json" class="d-none">
 
     <!-- モーダル群 -->
@@ -610,17 +607,14 @@
         });
 
         document.getElementById("downloadQuizBtn").onclick = () => downloadJSON("quiz_results.json", loadResults());
-        document.getElementById("downloadBookmarkBtn").onclick = () => downloadJSON("quiz_bookmarks.json", loadBookmarks());
         document.getElementById("downloadVideoBtn").onclick = () => downloadJSON("video_history.json", loadVideoHistory());
         function downloadJSON(n, d) {
             const b = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
             const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = n; a.click();
         }
         document.getElementById("uploadQuizBtn").onclick = () => document.getElementById("uploadQuizFile").click();
-        document.getElementById("uploadBookmarkBtn").onclick = () => document.getElementById("uploadBookmarkFile").click();
         document.getElementById("uploadVideoBtn").onclick = () => document.getElementById("uploadVideoFile").click();
         document.getElementById("uploadQuizFile").onchange = (e) => handleUpload(e.target, "quiz_results", updateMenuHighlight);
-        document.getElementById("uploadBookmarkFile").onchange = (e) => handleUpload(e.target, "quiz_bookmarks", updateMenuBookmarks);
         document.getElementById("uploadVideoFile").onchange = (e) => handleUpload(e.target, "video_history", updateVideoButtons);
         async function handleUpload(el, k, cb) {
             const f = el.files[0]; if (!f) return;
