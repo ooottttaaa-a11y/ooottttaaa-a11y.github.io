@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery Complete Guide - Demo & Playground</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            color: #2d3748;
+            padding-top: 60px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50%;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        /* Code & Demo Box */
+        .demo-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .demo-header {
+            background-color: #f7fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #edf2f7;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .demo-body {
+            padding: 1.5rem;
+        }
+
+        .demo-code {
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .demo-area {
+            background-color: #edf2f7;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Highlight Helper */
+        .highlight {
+            border: 2px solid #e53e3e !important;
+            background-color: #fff5f5 !important;
+            box-shadow: 0 0 10px rgba(229, 62, 62, 0.3);
+            transform: scale(1.02);
+            transition: 0.3s;
+        }
+        
+        /* Family Tree Box */
+        .family-node {
+            border: 2px solid #cbd5e0;
+            padding: 10px;
+            margin: 5px;
+            background: #fff;
+            display: block;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .family-node[class*="grandchild"] { margin-left: 20px; }
+
+        .btn-run {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+        }
+        .btn-run:hover { opacity: 0.9; color: white; }
+
+        .selected {
+            background-color: #fefcbf !important;
+            border-color: #ecc94b !important;
+        }
+        
+        pre { margin: 0; }
+    </style>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#navbar-example">
+
+    <!-- Navbar -->
+    <nav id="navbar-example" class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">jQuery Master</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#selectors">セレクタ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hierarchy">階層・検索</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#manipulation">操作</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#classes-css">属性・CSS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#effects">エフェクト</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#events">イベント</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="text-center mb-5 pt-5">
+            <h1 class="display-4 fw-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">jQuery Interactive Demo</h1>
+            <p class="lead text-muted">提供されたコードスニペットの動作確認用プレイグラウンド</p>
+        </div>
+
+        <!-- 1. Selectors -->
+        <section id="selectors">
+            <h2 class="section-title">1. 基本セレクタ (Selectors)</h2>
+            <p>HTML要素を指定するための基本的な方法です。</p>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <span>基本指定</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetSelectors1()">リセット</button>
+                </div>
+                <div class="demo-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>コード</h6>
+                            <pre><code class="javascript">$('div')              // タグ
+$('.box')             // クラス
+$('#box')             // ID
+$('[data-role="admin"]') // data属性
+$('[name="username"]')   // name属性</code></pre>
+                            <div class="d-grid gap-2 mt-3">
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('div')">Tag: div</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('.box')">Class: .box</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('#box-id')">ID: #box-id</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('[data-role=\'admin\']')">Data: [data-role="admin"]</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('[name=\'username\']')">Name: [name="username"]</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>デモエリア (結果が赤枠で表示)</h6>
+                            <div class="demo-area" id="demo-area-1">
+                                <div class="p-2 mb-2 border bg-white">各div要素</div>
+                                <div class="box p-2 mb-2 border bg-white">class="box"</div>
+                                <div id="box-id" class="p-2 mb-2 border bg-white">id="box-id"</div>
+                                <div data-role="admin" class="p-2 mb-2 border bg-white">data-role="admin"</div>
+                                <input type="text" name="username" value='name="username"' class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="mt-5">階層・複合セレクタ</h4>
+            <div class="demo-card">
+                 <div class="demo-header">
+                    <span>親子・隣接指定</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetSelectors2()">リセット</button>
+                </div>
+                <div class="demo-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <pre><code class="javascript">$('.parent > .child') // 直下
+$('.parent .child')   // 配下(孫含む)
+$('.a, .b')           // 複数
+$('.target + .next')  // 隣接(弟)</code></pre>
+                             <div class="d-grid gap-2 mt-3">
+                                <button class="btn btn-sm btn-run" onclick="runSelector2('.parent-box > .child-box')">直下 (>) </button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector2('.parent-box .child-box')">配下 (Space)</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector2('.target-a, .target-b')">複数 (,)</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector2('.target-base + div')">隣接 (+)</button>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="demo-area" id="demo-area-2">
+                                <div class="parent-box p-3 border mb-3 bg-white">
+                                    <strong>.parent-box</strong>
+                                    <div class="child-box p-2 border mt-2 bg-light">.child-box (直下)</div>
+                                    <div class="wrapper p-2 border mt-2">
+                                        wrapper
+                                        <div class="child-box p-2 border mt-2 bg-light">.child-box (孫)</div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="target-a p-2 border mb-1 bg-white">.target-a</div>
+                                <div class="target-b p-2 border mb-1 bg-white">.target-b</div>
+                                <div class="target-base p-2 border mb-1 bg-warning bg-opacity-25">.target-base (基準)</div>
+                                <div class="p-2 border mb-1 bg-white">直後のdiv (ターゲット)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Traversal -->
+        <section id="hierarchy">
+            <h2 class="section-title">2. トラバーサル (Family Tree)</h2>
+            <p>基準となる要素から、親・子・兄弟を探します。</p>
+
+            <div class="demo-card">
+                 <div class="demo-header">
+                    <span>DOMツリー探索</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetTree()">リセット</button>
+                </div>
+                <div class="demo-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                             <div class="btn-group-vertical w-100">
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('parents')">.parents() <span class="text-muted text-small">- 全親要素</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('parent')">.parent() <span class="text-muted text-small">- 直近親</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('prev')">.prev() <span class="text-muted text-small">- 直前(兄)</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('prevAll')">.prevAll() <span class="text-muted text-small">- 前の全て</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('next')">.next() <span class="text-muted text-small">- 直後(弟)</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('nextAll')">.nextAll() <span class="text-muted text-small">- 後の全て</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('children')">.children() <span class="text-muted text-small">- 全子要素</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('find')">.find(".grand") <span class="text-muted text-small">- 孫検索</span></button>
+                             </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="demo-area family-tree-area p-3 bg-light">
+                                <div class="family-node bg-white border-primary">
+                                    Grandparent (先祖)
+                                    <div class="family-node bg-white border-success">
+                                        Parent (親)
+                                        <div class="family-node">Brother A (兄A)</div>
+                                        <div class="family-node">Brother B (兄B)</div>
+                                        
+                                        <!-- Self -->
+                                        <div class="family-node self bg-warning text-dark fw-bold border-0 shadow-sm">
+                                            Self (自分) .self
+                                            <div class="family-node fw-normal">Child A</div>
+                                            <div class="family-node fw-normal">
+                                                Child B
+                                                <div class="family-node grand fw-light">Grandchild A (.grand)</div>
+                                                <div class="family-node fw-light">Grandchild B</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="family-node">Brother C (弟A)</div>
+                                        <div class="family-node">Brother D (弟B)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Manipulation -->
+        <section id="manipulation">
+            <h2 class="section-title">3. 要素の操作 (Manipulation)</h2>
+            <p>HTML要素の追加・削除・書き換えを行います。</p>
+
+            <div class="row">
+                <!-- Text/HTML -->
+                <div class="col-md-6">
+                    <div class="demo-card h-100">
+                        <div class="demo-header">Text & HTML</div>
+                        <div class="demo-body">
+                            <div id="manip-target-1" class="p-3 border mb-3 bg-light rounded">
+                                元のテキスト
+                            </div>
+                            <div class="d-flex gap-2 mb-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="$('#manip-target-1').text('テキスト変更！')">.text()</button>
+                                <button class="btn btn-sm btn-outline-success" onclick="$('#manip-target-1').html('<b>太字HTML</b>を挿入')">.html()</button>
+                            </div>
+                            <pre><code class="javascript">$('#box').text('テキスト')
+$('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Append/Prepend -->
+                <div class="col-md-6">
+                    <div class="demo-card h-100">
+                        <div class="demo-header">挿入 (Inner)</div>
+                        <div class="demo-body">
+                            <ul id="manip-list" class="list-group mb-3">
+                                <li class="list-group-item">Item 1</li>
+                                <li class="list-group-item">Item 2</li>
+                            </ul>
+                            <div class="d-flex gap-2 mb-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="$('#manip-list').append('<li class=\'list-group-item list-group-item-info\'>Append(最後)</li>')">.append()</button>
+                                <button class="btn btn-sm btn-outline-success" onclick="$('#manip-list').prepend('<li class=\'list-group-item list-group-item-warning\'>Prepend(先頭)</li>')">.prepend()</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Before/After -->
+                <div class="col-md-6">
+                    <div class="demo-card h-100">
+                        <div class="demo-header">配置 (Sibling)</div>
+                        <div class="demo-body">
+                            <div id="manip-center" class="p-3 border bg-info bg-opacity-10 text-center mb-3">
+                                基準要素 (.center)
+                            </div>
+                            <div class="d-flex gap-2 mb-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="$('#manip-center').before('<div class=\'alert alert-secondary py-1 my-1\'>Before(兄)</div>')">.before()</button>
+                                <button class="btn btn-sm btn-outline-success" onclick="$('#manip-center').after('<div class=\'alert alert-secondary py-1 my-1\'>After(弟)</div>')">.after()</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remove/Empty -->
+                <div class="col-md-6">
+                    <div class="demo-card h-100">
+                        <div class="demo-header">削除</div>
+                        <div class="demo-body">
+                            <div id="remove-area" class="border p-2 mb-2">
+                                <div class="item p-1 border mb-1">Item 1 (残る)</div>
+                                <div class="item remove-target p-1 border mb-1 bg-danger text-white">Item 2 (削除対象)</div>
+                                <div class="item p-1 border mb-1">Item 3 (残る)</div>
+                            </div>
+                            <div class="d-flex gap-2 mb-2">
+                                <button class="btn btn-sm btn-outline-danger" onclick="$('#remove-area .remove-target').remove()">.remove(target)</button>
+                                <button class="btn btn-sm btn-outline-warning" onclick="$('#remove-area').empty()">.empty() (中身全部)</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="location.reload()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Class & CSS -->
+        <section id="classes-css">
+            <h2 class="section-title">4. クラス属性とCSS</h2>
+            
+            <div class="demo-card">
+                <div class="demo-body d-flex align-items-center justify-content-around">
+                    <div id="css-demo-box" class="d-flex align-items-center justify-content-center border" 
+                        style="width: 150px; height: 150px; transition: 0.3s; background-color: #eee;">
+                        BOX
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2" style="width: 300px;">
+                        <button class="btn btn-outline-dark" onclick="$('#css-demo-box').addClass('bg-primary text-white')">.addClass('bg-primary')</button>
+                        <button class="btn btn-outline-dark" onclick="$('#css-demo-box').removeClass('bg-primary text-white')">.removeClass()</button>
+                        <button class="btn btn-outline-dark" onclick="alert('Has class bg-primary? : ' + $('#css-demo-box').hasClass('bg-primary'))">.hasClass() check</button>
+                        <hr>
+                        <button class="btn btn-outline-info" onclick="$('#css-demo-box').css('border-radius', '50%')">.css('border-radius', '50%')</button>
+                        <button class="btn btn-outline-info" onclick="$('#css-demo-box').css({'width':'200px', 'transform':'rotate(10deg)'})">.css({ object })</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Effects -->
+        <section id="effects">
+            <h2 class="section-title">5. アニメーション・エフェクト</h2>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body text-center">
+                            <h5>Show / Hide</h5>
+                            <div id="eff-box-1" class="bg-primary text-white mx-auto my-2 p-4 rounded" style="width: 100px;"></div>
+                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-1').hide()">Hide</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-1').show()">Show</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body text-center">
+                            <h5>Fade</h5>
+                            <div id="eff-box-2" class="bg-success text-white mx-auto my-2 p-4 rounded" style="width: 100px;"></div>
+                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-2').fadeOut(1000)">Out (1s)</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-2').fadeIn(1000)">In (1s)</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body text-center">
+                            <h5>Slide</h5>
+                            <div id="eff-box-3" class="bg-warning text-dark mx-auto my-2 p-4 rounded" style="width: 100px;"></div>
+                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-3').slideUp(1000)">Up (1s)</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-3').slideDown(1000)">Down (1s)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-card mt-3">
+                <div class="demo-header">Animate (Custom)</div>
+                <div class="demo-body position-relative" style="height: 150px;">
+                    <div id="anim-box" class="bg-dark text-white d-flex align-items-center justify-content-center shadow" 
+                        style="width: 80px; height: 80px; position: absolute; left: 0; top: 20px; border-radius: 4px;">
+                        Move
+                    </div>
+                </div>
+                <div class="demo-footer p-3 border-top bg-light">
+                     <button class="btn btn-primary" onclick="runAnimate()">Run .animate({left:300, w:120}, 1000)</button>
+                     <button class="btn btn-secondary" onclick="$('#anim-box').css({left:0, width:80, height:80})">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Data & Forms & Loops -->
+        <section id="data-loops">
+            <h2 class="section-title">6. データ・フォーム・ループ</h2>
+            
+            <div class="row">
+                <!-- .val() -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header font-monospace">.val()</div>
+                        <div class="card-body">
+                            <input type="text" id="val-input" class="form-control mb-2" placeholder="入力してください" value="Hello World">
+                            <button class="btn btn-outline-primary w-100" onclick="alert('Value: ' + $('#val-input').val())">値を取得 (Alert)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- .data() -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header font-monospace">.data()</div>
+                        <div class="card-body">
+                            <p id="data-el" data-name="波平" data-age="54" class="p-2 bg-light border">
+                                &lt;p data-name="波平" data-age="54"&gt;
+                            </p>
+                            <button class="btn btn-outline-primary w-100" onclick="showData()">データを取得 Console/Alert</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <!-- .index() / .eq() -->
+                <div class="col-md-6">
+                     <div class="card h-100">
+                        <div class="card-header font-monospace">.index() / .eq()</div>
+                        <div class="card-body">
+                            <ul id="idx-list" class="list-group mb-2">
+                                <li class="list-group-item">Item 0</li>
+                                <li class="list-group-item" id="idx-target">Item 1 (Target)</li>
+                                <li class="list-group-item">Item 2</li>
+                            </ul>
+                            <button class="btn btn-sm btn-outline-dark" onclick="alert('Target Index: ' + $('#idx-target').index())">index()</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="alert('Content of eq(2): ' + $('#idx-list li').eq(2).text())">eq(2)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- .each() -->
+                <div class="col-md-6">
+                     <div class="card h-100">
+                        <div class="card-header font-monospace">.each()</div>
+                        <div class="card-body">
+                            <ul id="each-list" class="list-group mb-2">
+                                <li class="list-group-item">サザエ</li>
+                                <li class="list-group-item">カツオ</li>
+                                <li class="list-group-item">わかめ</li>
+                            </ul>
+                            <button class="btn btn-sm btn-primary w-100" onclick="runEach()">Console Log Each Item</button>
+                            <div id="each-result" class="mt-2 small text-muted"></div>
+                        </div>
+                    </div>                   
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Events -->
+        <section id="events">
+            <h2 class="section-title">7. イベント (Events)</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><code>.on('click', ...)</code> や <code>.hover(...)</code> のデモです。</p>
+                    <div id="event-box" class="p-5 border text-center" style="background-color: #eee; cursor: pointer; transition: 0.3s;">
+                        マウスを乗せて、クリックしてください
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="h-100 p-3 bg-dark text-white font-monospace rounded" id="event-log-area" style="overflow-y:auto; max-height: 200px;">
+                        > Event Log initialized...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center py-4 mt-5 bg-white border-top">
+        <p class="mb-0 text-muted">jQuery Demo Page - Generated for User Request</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <script>
+        hljs.highlightAll();
+
+        // 1. Selector Demos
+        function runSelector1(sel) {
+            $('#demo-area-1 div, #demo-area-1 input').removeClass('highlight'); // clear
+            $('#demo-area-1').find(sel).addClass('highlight');
+        }
+        function resetSelectors1() {
+            $('#demo-area-1 .highlight').removeClass('highlight');
+        }
+
+        function runSelector2(sel) {
+            $('#demo-area-2 div').removeClass('highlight');
+            $('#demo-area-2').find(sel).addClass('highlight');
+            // For '+' selector demo sibling issue within confine, we use general jQuery
+            if (sel.includes('+')) {
+                // reset context to internal
+                $('.target-base + div').addClass('highlight');
+            }
+        }
+        function resetSelectors2() {
+            $('#demo-area-2 .highlight').removeClass('highlight');
+        }
+
+        // 2. Family Tree
+        function runTree(method) {
+            $('.family-node').removeClass('selected');
+            const $self = $('.family-node.self');
+            
+            if (method === 'parents') $self.parents('.family-node').addClass('selected');
+            if (method === 'parent') $self.parent().addClass('selected');
+            if (method === 'prev') $self.prev().addClass('selected');
+            if (method === 'prevAll') $self.prevAll().addClass('selected');
+            if (method === 'next') $self.next().addClass('selected');
+            if (method === 'nextAll') $self.nextAll().addClass('selected');
+            if (method === 'children') $self.children('.family-node').addClass('selected');
+            if (method === 'find') $self.find('.grand').addClass('selected');
+        }
+        function resetTree() {
+            $('.family-node').removeClass('selected');
+        }
+
+        // 5. Animate
+        function runAnimate() {
+            $('#anim-box').animate({
+                'left': '300px',
+                'width': '120px',
+                'height': '120px'
+            }, 1000);
+        }
+
+        // 6. Data
+        function showData() {
+            const name = $('#data-el').data('name');
+            const age = $('#data-el').data('age');
+            alert(`Name: ${name}, Age: ${age}`);
+        }
+
+        function runEach() {
+            $('#each-result').html('');
+            $('#each-list li').each(function(index, element) {
+                const txt = $(element).text();
+                console.log(index + ': ' + txt);
+                $('#each-result').append(`${index}: ${txt}<br>`);
+            });
+        }
+
+        // 7. Events
+        $(function() {
+            const $log = $('#event-log-area');
+            const $box = $('#event-box');
+
+            function addLog(msg) {
+                $log.append(`<div>> ${msg}</div>`);
+                $log.scrollTop($log[0].scrollHeight);
+            }
+
+            $box.hover(
+                function() { // enter
+                    $(this).addClass('bg-info text-white').removeClass('bg-light');
+                    addLog('Hover In (mouseenter)');
+                },
+                function() { // leave
+                    $(this).removeClass('bg-info text-white').addClass('bg-light');
+                    addLog('Hover Out (mouseleave)');
+                }
+            );
+
+            $box.on('click', function() {
+                $(this).toggleClass('border-danger border-3');
+                addLog('Click event fired!');
+                $(this).text($(this).hasClass('border-danger') ? 'Clicked! (Active)' : 'Click me again');
+            });
+        });
+
+    </script>
+</body>
+</html>
