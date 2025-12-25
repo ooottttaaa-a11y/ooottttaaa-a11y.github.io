@@ -10,7 +10,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@300;400;600&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@300;400;600&display=swap"
         rel="stylesheet">
     <!-- Highlight.js -->
     <link rel="stylesheet"
@@ -113,7 +114,7 @@
             transform: scale(1.02);
             transition: 0.3s;
         }
-        
+
         /* Family Tree Box */
         .family-node {
             border: 2px solid #cbd5e0;
@@ -124,21 +125,30 @@
             border-radius: 5px;
             transition: 0.3s;
         }
-        .family-node[class*="grandchild"] { margin-left: 20px; }
+
+        .family-node[class*="grandchild"] {
+            margin-left: 20px;
+        }
 
         .btn-run {
             background: var(--primary-gradient);
             color: white;
             border: none;
         }
-        .btn-run:hover { opacity: 0.9; color: white; }
+
+        .btn-run:hover {
+            opacity: 0.9;
+            color: white;
+        }
 
         .selected {
             background-color: #fefcbf !important;
             border-color: #ecc94b !important;
         }
-        
-        pre { margin: 0; }
+
+        pre {
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -166,7 +176,9 @@
 
     <div class="container mt-5">
         <div class="text-center mb-5 pt-5">
-            <h1 class="display-4 fw-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">jQuery Interactive Demo</h1>
+            <h1 class="display-4 fw-bold"
+                style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                jQuery Interactive Demo</h1>
             <p class="lead text-muted">提供されたコードスニペットの動作確認用プレイグラウンド</p>
         </div>
 
@@ -190,11 +202,14 @@ $('#box')             // ID
 $('[data-role="admin"]') // data属性
 $('[name="username"]')   // name属性</code></pre>
                             <div class="d-grid gap-2 mt-3">
-                                <button class="btn btn-sm btn-run" onclick="runSelector1('div')">Tag: div</button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector1('.box')">Class: .box</button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector1('#box-id')">ID: #box-id</button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector1('[data-role=\'admin\']')">Data: [data-role="admin"]</button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector1('[name=\'username\']')">Name: [name="username"]</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('div')">$('div')</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector1('.box')">$('.box')</button>
+                                <button class="btn btn-sm btn-run"
+                                    onclick="runSelector1('#box-id')">$('#box-id')</button>
+                                <button class="btn btn-sm btn-run"
+                                    onclick="runSelector1('[data-role=\'admin\']')">$('[data-role="admin"]')</button>
+                                <button class="btn btn-sm btn-run"
+                                    onclick="runSelector1('[name=\'username\']')">$('[name="username"]')</button>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -213,7 +228,7 @@ $('[name="username"]')   // name属性</code></pre>
 
             <h4 class="mt-5">階層・複合セレクタ</h4>
             <div class="demo-card">
-                 <div class="demo-header">
+                <div class="demo-header">
                     <span>親子・隣接指定</span>
                     <button class="btn btn-sm btn-outline-secondary" onclick="resetSelectors2()">リセット</button>
                 </div>
@@ -224,11 +239,15 @@ $('[name="username"]')   // name属性</code></pre>
 $('.parent .child')   // 配下(孫含む)
 $('.a, .b')           // 複数
 $('.target + .next')  // 隣接(弟)</code></pre>
-                             <div class="d-grid gap-2 mt-3">
-                                <button class="btn btn-sm btn-run" onclick="runSelector2('.parent-box > .child-box')">直下 (>) </button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector2('.parent-box .child-box')">配下 (Space)</button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector2('.target-a, .target-b')">複数 (,)</button>
-                                <button class="btn btn-sm btn-run" onclick="runSelector2('.target-base + div')">隣接 (+)</button>
+                            <div class="d-grid gap-2 mt-3">
+                                <button class="btn btn-sm btn-run"
+                                    onclick="runSelector2('.parent-box > .child-box')">$('.parent > .child')</button>
+                                <button class="btn btn-sm btn-run"
+                                    onclick="runSelector2('.parent-box .child-box')">$('.parent .child')</button>
+                                <button class="btn btn-sm btn-run" onclick="runSelector2('.target-a, .target-b')">$('.a,
+                                    .b')</button>
+                                <button class="btn btn-sm btn-run"
+                                    onclick="runSelector2('.target-base + div')">$('.target + .next')</button>
                             </div>
                         </div>
                         <div class="col-md-7">
@@ -244,7 +263,8 @@ $('.target + .next')  // 隣接(弟)</code></pre>
                                 <hr>
                                 <div class="target-a p-2 border mb-1 bg-white">.target-a</div>
                                 <div class="target-b p-2 border mb-1 bg-white">.target-b</div>
-                                <div class="target-base p-2 border mb-1 bg-warning bg-opacity-25">.target-base (基準)</div>
+                                <div class="target-base p-2 border mb-1 bg-warning bg-opacity-25">.target-base (基準)
+                                </div>
                                 <div class="p-2 border mb-1 bg-white">直後のdiv (ターゲット)</div>
                             </div>
                         </div>
@@ -259,23 +279,41 @@ $('.target + .next')  // 隣接(弟)</code></pre>
             <p>基準となる要素から、親・子・兄弟を探します。</p>
 
             <div class="demo-card">
-                 <div class="demo-header">
+                <div class="demo-header">
                     <span>DOMツリー探索</span>
                     <button class="btn btn-sm btn-outline-secondary" onclick="resetTree()">リセット</button>
                 </div>
                 <div class="demo-body">
                     <div class="row">
                         <div class="col-md-4">
-                             <div class="btn-group-vertical w-100">
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('parents')">.parents() <span class="text-muted text-small">- 全親要素</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('parent')">.parent() <span class="text-muted text-small">- 直近親</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('prev')">.prev() <span class="text-muted text-small">- 直前(兄)</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('prevAll')">.prevAll() <span class="text-muted text-small">- 前の全て</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('next')">.next() <span class="text-muted text-small">- 直後(弟)</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('nextAll')">.nextAll() <span class="text-muted text-small">- 後の全て</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('children')">.children() <span class="text-muted text-small">- 全子要素</span></button>
-                                <button class="btn btn-sm btn-outline-dark mb-1" onclick="runTree('find')">.find(".grand") <span class="text-muted text-small">- 孫検索</span></button>
-                             </div>
+                            <div class="btn-group-vertical w-100">
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('parents')">$('.self').parents()
+                                    <span class="text-muted text-small">- 全親要素</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('parent')">$('.self').parent()
+                                    <span class="text-muted text-small">- 直近親</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('prev')">$('.self').prev() <span class="text-muted text-small">-
+                                        直前(兄)</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('prevAll')">$('.self').prevAll()
+                                    <span class="text-muted text-small">- 前の全て</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('next')">$('.self').next() <span class="text-muted text-small">-
+                                        直後(弟)</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('nextAll')">$('.self').nextAll()
+                                    <span class="text-muted text-small">- 後の全て</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('children')">$('.self').children() <span
+                                        class="text-muted text-small">-
+                                        全子要素</span></button>
+                                <button class="btn btn-sm btn-outline-dark mb-1"
+                                    onclick="runTree('find')">$('.self').find(".grand") <span
+                                        class="text-muted text-small">-
+                                        孫検索</span></button>
+                            </div>
                         </div>
                         <div class="col-md-8">
                             <div class="demo-area family-tree-area p-3 bg-light">
@@ -285,7 +323,7 @@ $('.target + .next')  // 隣接(弟)</code></pre>
                                         Parent (親)
                                         <div class="family-node">Brother A (兄A)</div>
                                         <div class="family-node">Brother B (兄B)</div>
-                                        
+
                                         <!-- Self -->
                                         <div class="family-node self bg-warning text-dark fw-bold border-0 shadow-sm">
                                             Self (自分) .self
@@ -323,8 +361,10 @@ $('.target + .next')  // 隣接(弟)</code></pre>
                                 元のテキスト
                             </div>
                             <div class="d-flex gap-2 mb-2">
-                                <button class="btn btn-sm btn-outline-primary" onclick="$('#manip-target-1').text('テキスト変更！')">.text()</button>
-                                <button class="btn btn-sm btn-outline-success" onclick="$('#manip-target-1').html('<b>太字HTML</b>を挿入')">.html()</button>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="$('#manip-target-1').text('テキスト変更！')">$('#target').text('...')</button>
+                                <button class="btn btn-sm btn-outline-success"
+                                    onclick="$('#manip-target-1').html('<b>太字HTML</b>を挿入')">$('#target').html('...')</button>
                             </div>
                             <pre><code class="javascript">$('#box').text('テキスト')
 $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
@@ -342,8 +382,10 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
                                 <li class="list-group-item">Item 2</li>
                             </ul>
                             <div class="d-flex gap-2 mb-2">
-                                <button class="btn btn-sm btn-outline-primary" onclick="$('#manip-list').append('<li class=\'list-group-item list-group-item-info\'>Append(最後)</li>')">.append()</button>
-                                <button class="btn btn-sm btn-outline-success" onclick="$('#manip-list').prepend('<li class=\'list-group-item list-group-item-warning\'>Prepend(先頭)</li>')">.prepend()</button>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="$('#manip-list').append('<li class=\'list-group-item list-group-item-info\'>Append(最後)</li>')">$('#list').append(...)</button>
+                                <button class="btn btn-sm btn-outline-success"
+                                    onclick="$('#manip-list').prepend('<li class=\'list-group-item list-group-item-warning\'>Prepend(先頭)</li>')">$('#list').prepend(...)</button>
                             </div>
                         </div>
                     </div>
@@ -358,8 +400,10 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
                                 基準要素 (.center)
                             </div>
                             <div class="d-flex gap-2 mb-2">
-                                <button class="btn btn-sm btn-outline-primary" onclick="$('#manip-center').before('<div class=\'alert alert-secondary py-1 my-1\'>Before(兄)</div>')">.before()</button>
-                                <button class="btn btn-sm btn-outline-success" onclick="$('#manip-center').after('<div class=\'alert alert-secondary py-1 my-1\'>After(弟)</div>')">.after()</button>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="$('#manip-center').before('<div class=\'alert alert-secondary py-1 my-1\'>Before(兄)</div>')">$('#center').before(...)</button>
+                                <button class="btn btn-sm btn-outline-success"
+                                    onclick="$('#manip-center').after('<div class=\'alert alert-secondary py-1 my-1\'>After(弟)</div>')">$('#center').after(...)</button>
                             </div>
                         </div>
                     </div>
@@ -376,9 +420,12 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
                                 <div class="item p-1 border mb-1">Item 3 (残る)</div>
                             </div>
                             <div class="d-flex gap-2 mb-2">
-                                <button class="btn btn-sm btn-outline-danger" onclick="$('#remove-area .remove-target').remove()">.remove(target)</button>
-                                <button class="btn btn-sm btn-outline-warning" onclick="$('#remove-area').empty()">.empty() (中身全部)</button>
-                                <button class="btn btn-sm btn-outline-secondary" onclick="location.reload()">Reset</button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                    onclick="$('#remove-area .remove-target').remove()">$('.target').remove()</button>
+                                <button class="btn btn-sm btn-outline-warning"
+                                    onclick="$('#remove-area').empty()">$('#area').empty()</button>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="location.reload()">Reset</button>
                             </div>
                         </div>
                     </div>
@@ -389,21 +436,28 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
         <!-- 4. Class & CSS -->
         <section id="classes-css">
             <h2 class="section-title">4. クラス属性とCSS</h2>
-            
+
             <div class="demo-card">
                 <div class="demo-body d-flex align-items-center justify-content-around">
-                    <div id="css-demo-box" class="d-flex align-items-center justify-content-center border" 
+                    <div id="css-demo-box" class="d-flex align-items-center justify-content-center border"
                         style="width: 150px; height: 150px; transition: 0.3s; background-color: #eee;">
                         BOX
                     </div>
-                    
+
                     <div class="d-flex flex-column gap-2" style="width: 300px;">
-                        <button class="btn btn-outline-dark" onclick="$('#css-demo-box').addClass('bg-primary text-white')">.addClass('bg-primary')</button>
-                        <button class="btn btn-outline-dark" onclick="$('#css-demo-box').removeClass('bg-primary text-white')">.removeClass()</button>
-                        <button class="btn btn-outline-dark" onclick="alert('Has class bg-primary? : ' + $('#css-demo-box').hasClass('bg-primary'))">.hasClass() check</button>
+                        <button class="btn btn-outline-dark"
+                            onclick="$('#css-demo-box').addClass('bg-primary text-white')">$('#box').addClass(...)</button>
+                        <button class="btn btn-outline-dark"
+                            onclick="$('#css-demo-box').removeClass('bg-primary text-white')">$('#box').removeClass(...)</button>
+                        <button class="btn btn-outline-dark"
+                            onclick="alert('Has class bg-primary? : ' + $('#css-demo-box').hasClass('bg-primary'))">$('#box').hasClass(...)</button>
                         <hr>
-                        <button class="btn btn-outline-info" onclick="$('#css-demo-box').css('border-radius', '50%')">.css('border-radius', '50%')</button>
-                        <button class="btn btn-outline-info" onclick="$('#css-demo-box').css({'width':'200px', 'transform':'rotate(10deg)'})">.css({ object })</button>
+                        <button class="btn btn-outline-info"
+                            onclick="$('#css-demo-box').css('border-radius', '50%')">$('#box').css('radius',
+                            ...)</button>
+                        <button class="btn btn-outline-info"
+                            onclick="$('#css-demo-box').css({'width':'200px', 'transform':'rotate(10deg)'})">$('#box').css({
+                            object })</button>
                     </div>
                 </div>
             </div>
@@ -412,15 +466,18 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
         <!-- 5. Effects -->
         <section id="effects">
             <h2 class="section-title">5. アニメーション・エフェクト</h2>
-            
+
             <div class="row">
                 <div class="col-md-4">
                     <div class="card mb-3">
                         <div class="card-body text-center">
                             <h5>Show / Hide</h5>
-                            <div id="eff-box-1" class="bg-primary text-white mx-auto my-2 p-4 rounded" style="width: 100px;"></div>
-                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-1').hide()">Hide</button>
-                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-1').show()">Show</button>
+                            <div id="eff-box-1" class="bg-primary text-white mx-auto my-2 p-4 rounded"
+                                style="width: 100px;"></div>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="$('#eff-box-1').hide()">$('#box').hide()</button>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="$('#eff-box-1').show()">$('#box').show()</button>
                         </div>
                     </div>
                 </div>
@@ -428,9 +485,12 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
                     <div class="card mb-3">
                         <div class="card-body text-center">
                             <h5>Fade</h5>
-                            <div id="eff-box-2" class="bg-success text-white mx-auto my-2 p-4 rounded" style="width: 100px;"></div>
-                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-2').fadeOut(1000)">Out (1s)</button>
-                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-2').fadeIn(1000)">In (1s)</button>
+                            <div id="eff-box-2" class="bg-success text-white mx-auto my-2 p-4 rounded"
+                                style="width: 100px;"></div>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="$('#eff-box-2').fadeOut(1000)">$('#box').fadeOut()</button>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="$('#eff-box-2').fadeIn(1000)">$('#box').fadeIn()</button>
                         </div>
                     </div>
                 </div>
@@ -438,9 +498,12 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
                     <div class="card mb-3">
                         <div class="card-body text-center">
                             <h5>Slide</h5>
-                            <div id="eff-box-3" class="bg-warning text-dark mx-auto my-2 p-4 rounded" style="width: 100px;"></div>
-                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-3').slideUp(1000)">Up (1s)</button>
-                            <button class="btn btn-sm btn-outline-dark" onclick="$('#eff-box-3').slideDown(1000)">Down (1s)</button>
+                            <div id="eff-box-3" class="bg-warning text-dark mx-auto my-2 p-4 rounded"
+                                style="width: 100px;"></div>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="$('#eff-box-3').slideUp(1000)">$('#box').slideUp()</button>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="$('#eff-box-3').slideDown(1000)">$('#box').slideDown()</button>
                         </div>
                     </div>
                 </div>
@@ -449,14 +512,16 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
             <div class="demo-card mt-3">
                 <div class="demo-header">Animate (Custom)</div>
                 <div class="demo-body position-relative" style="height: 150px;">
-                    <div id="anim-box" class="bg-dark text-white d-flex align-items-center justify-content-center shadow" 
+                    <div id="anim-box"
+                        class="bg-dark text-white d-flex align-items-center justify-content-center shadow"
                         style="width: 80px; height: 80px; position: absolute; left: 0; top: 20px; border-radius: 4px;">
                         Move
                     </div>
                 </div>
                 <div class="demo-footer p-3 border-top bg-light">
-                     <button class="btn btn-primary" onclick="runAnimate()">Run .animate({left:300, w:120}, 1000)</button>
-                     <button class="btn btn-secondary" onclick="$('#anim-box').css({left:0, width:80, height:80})">Reset</button>
+                    <button class="btn btn-primary" onclick="runAnimate()">Run $('#box').animate(...)</button>
+                    <button class="btn btn-secondary"
+                        onclick="$('#anim-box').css({left:0, width:80, height:80})">Reset</button>
                 </div>
             </div>
         </section>
@@ -464,15 +529,17 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
         <!-- 6. Data & Forms & Loops -->
         <section id="data-loops">
             <h2 class="section-title">6. データ・フォーム・ループ</h2>
-            
+
             <div class="row">
                 <!-- .val() -->
                 <div class="col-md-6">
                     <div class="card h-100">
-                        <div class="card-header font-monospace">.val()</div>
+                        <div class="card-header font-monospace">$('input').val()</div>
                         <div class="card-body">
-                            <input type="text" id="val-input" class="form-control mb-2" placeholder="入力してください" value="Hello World">
-                            <button class="btn btn-outline-primary w-100" onclick="alert('Value: ' + $('#val-input').val())">値を取得 (Alert)</button>
+                            <input type="text" id="val-input" class="form-control mb-2" placeholder="入力してください"
+                                value="Hello World">
+                            <button class="btn btn-outline-primary w-100"
+                                onclick="alert('Value: ' + $('#val-input').val())">$('#input').val()</button>
                         </div>
                     </div>
                 </div>
@@ -480,12 +547,13 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
                 <!-- .data() -->
                 <div class="col-md-6">
                     <div class="card h-100">
-                        <div class="card-header font-monospace">.data()</div>
+                        <div class="card-header font-monospace">$('p').data()</div>
                         <div class="card-body">
                             <p id="data-el" data-name="波平" data-age="54" class="p-2 bg-light border">
                                 &lt;p data-name="波平" data-age="54"&gt;
                             </p>
-                            <button class="btn btn-outline-primary w-100" onclick="showData()">データを取得 Console/Alert</button>
+                            <button class="btn btn-outline-primary w-100"
+                                onclick="showData()">$('p').data('name')</button>
                         </div>
                     </div>
                 </div>
@@ -494,34 +562,37 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
             <div class="row mt-4">
                 <!-- .index() / .eq() -->
                 <div class="col-md-6">
-                     <div class="card h-100">
-                        <div class="card-header font-monospace">.index() / .eq()</div>
+                    <div class="card h-100">
+                        <div class="card-header font-monospace">$(el).index() / $(el).eq()</div>
                         <div class="card-body">
                             <ul id="idx-list" class="list-group mb-2">
                                 <li class="list-group-item">Item 0</li>
                                 <li class="list-group-item" id="idx-target">Item 1 (Target)</li>
                                 <li class="list-group-item">Item 2</li>
                             </ul>
-                            <button class="btn btn-sm btn-outline-dark" onclick="alert('Target Index: ' + $('#idx-target').index())">index()</button>
-                            <button class="btn btn-sm btn-outline-dark" onclick="alert('Content of eq(2): ' + $('#idx-list li').eq(2).text())">eq(2)</button>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="alert('Target Index: ' + $('#idx-target').index())">$('#target').index()</button>
+                            <button class="btn btn-sm btn-outline-dark"
+                                onclick="alert('Content of eq(2): ' + $('#idx-list li').eq(2).text())">$('li').eq(2)</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- .each() -->
                 <div class="col-md-6">
-                     <div class="card h-100">
-                        <div class="card-header font-monospace">.each()</div>
+                    <div class="card h-100">
+                        <div class="card-header font-monospace">$('li').each()</div>
                         <div class="card-body">
                             <ul id="each-list" class="list-group mb-2">
                                 <li class="list-group-item">サザエ</li>
                                 <li class="list-group-item">カツオ</li>
                                 <li class="list-group-item">わかめ</li>
                             </ul>
-                            <button class="btn btn-sm btn-primary w-100" onclick="runEach()">Console Log Each Item</button>
+                            <button class="btn btn-sm btn-primary w-100" onclick="runEach()">Console Log Each
+                                Item</button>
                             <div id="each-result" class="mt-2 small text-muted"></div>
                         </div>
-                    </div>                   
+                    </div>
                 </div>
             </div>
         </section>
@@ -531,15 +602,28 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
             <h2 class="section-title">7. イベント (Events)</h2>
             <div class="row">
                 <div class="col-md-6">
-                    <p><code>.on('click', ...)</code> や <code>.hover(...)</code> のデモです。</p>
-                    <div id="event-box" class="p-5 border text-center" style="background-color: #eee; cursor: pointer; transition: 0.3s;">
+                    <p><code>$('#box').on('click', ...)</code> や <code>$('#box').hover(...)</code> のデモです。</p>
+                    <div id="event-box" class="p-5 border text-center"
+                        style="background-color: #eee; cursor: pointer; transition: 0.3s;">
                         マウスを乗せて、クリックしてください
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="h-100 p-3 bg-dark text-white font-monospace rounded" id="event-log-area" style="overflow-y:auto; max-height: 200px;">
+                    <div class="h-100 p-3 bg-dark text-white font-monospace rounded" id="event-log-area"
+                        style="overflow-y:auto; max-height: 200px;">
                         > Event Log initialized...
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Full Source Code -->
+        <section id="source-code-section">
+            <h2 class="section-title">8. このページの全ソースコード</h2>
+            <p>現在のページのHTML/JSソースコードです。</p>
+            <div class="demo-card">
+                <div class="demo-body">
+                    <pre><code id="full-source" class="html" style="max-height: 600px; overflow-y: scroll;">Loading source code...</code></pre>
                 </div>
             </div>
         </section>
@@ -584,7 +668,7 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
         function runTree(method) {
             $('.family-node').removeClass('selected');
             const $self = $('.family-node.self');
-            
+
             if (method === 'parents') $self.parents('.family-node').addClass('selected');
             if (method === 'parent') $self.parent().addClass('selected');
             if (method === 'prev') $self.prev().addClass('selected');
@@ -616,7 +700,7 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
 
         function runEach() {
             $('#each-result').html('');
-            $('#each-list li').each(function(index, element) {
+            $('#each-list li').each(function (index, element) {
                 const txt = $(element).text();
                 console.log(index + ': ' + txt);
                 $('#each-result').append(`${index}: ${txt}<br>`);
@@ -624,7 +708,7 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
         }
 
         // 7. Events
-        $(function() {
+        $(function () {
             const $log = $('#event-log-area');
             const $box = $('#event-box');
 
@@ -634,23 +718,39 @@ $('#box').html('&lt;b&gt;HTML&lt;/b&gt;')</code></pre>
             }
 
             $box.hover(
-                function() { // enter
+                function () { // enter
                     $(this).addClass('bg-info text-white').removeClass('bg-light');
                     addLog('Hover In (mouseenter)');
                 },
-                function() { // leave
+                function () { // leave
                     $(this).removeClass('bg-info text-white').addClass('bg-light');
                     addLog('Hover Out (mouseleave)');
                 }
             );
 
-            $box.on('click', function() {
+            $box.on('click', function () {
                 $(this).toggleClass('border-danger border-3');
                 addLog('Click event fired!');
                 $(this).text($(this).hasClass('border-danger') ? 'Clicked! (Active)' : 'Click me again');
+            });
+
+            // 8. Load Full Source Code
+            $.ajax({
+                url: 'index2.html',
+                dataType: 'text',
+                success: function (data) {
+                    $('#full-source').text(data);
+                    // Re-highlight after setting text
+                    // Note: hljs.highlightElement requires DOM element
+                    hljs.highlightElement(document.getElementById('full-source'));
+                },
+                error: function () {
+                    $('#full-source').text('ソースコードの読み込みに失敗しました。(ローカルファイル制限の可能性があります)');
+                }
             });
         });
 
     </script>
 </body>
+
 </html>
