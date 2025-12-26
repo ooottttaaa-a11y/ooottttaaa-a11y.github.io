@@ -7,6 +7,7 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no, viewport-fit=cover">
     <title>問題集</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
@@ -93,10 +94,26 @@
 
         /* メニュー内のボタン調整 */
         #questionList .btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             text-align: left;
             margin-bottom: 2px;
             font-size: 0.9rem;
             white-space: normal;
+        }
+
+        .selected-question {
+            background-color: yellow !important;
+            color: black !important;
+        }
+
+        .fav-icon {
+            color: #ff4500;
+            margin-left: auto;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding-left: 8px;
         }
 
         .folder-title {
@@ -437,12 +454,27 @@
                         const btn = document.createElement("button");
                         btn.className = "btn btn-light btn-sm text-start border";
                         btn.dataset.file = "data/" + item;
-                        btn.textContent = item.split("/").pop().replace(".html", "");
+
+                        // ボタン内の構造: テキスト
+                        const spanText = document.createElement("span");
+                        spanText.textContent = item.split("/").pop().replace(".html", "");
+                        btn.appendChild(spanText);
+
+                        // ブックマークアイコン
+                        const icon = document.createElement("i");
+                        icon.className = "fav-icon bi bi-bookmark-fill";
+                        icon.style.display = "none"; // 初期は非表示
+                        btn.appendChild(icon);
+
                         btn.onclick = () => {
+                            // 選択状態の更新
+                            document.querySelectorAll("#questionList .btn").forEach(b => b.classList.remove("selected-question"));
+                            btn.classList.add("selected-question");
+
                             qFrame.src = btn.dataset.file;
                             aFrame.classList.add("d-none");
                             qFrame.classList.remove("d-none");
-                            titleEl.textContent = btn.textContent;
+                            titleEl.textContent = spanText.textContent;
                             clickedOnce = false;
 
                             if (window.innerWidth < 992) {
@@ -533,7 +565,8 @@
                     let cur = loadBookmarks();
                     if (cur.includes(qFile)) { cur = cur.filter(x => x !== qFile); bookmarkBtn.style.backgroundColor = ""; }
                     else { cur.push(qFile); bookmarkBtn.style.backgroundColor = "yellow"; }
-                    saveBookmarks(cur); updateMenuBookmarks();
+                    saveBookmarks(cur);
+                    updateMenuBookmarks(); // メニューの★表示を更新
                 };
             }
 
@@ -582,10 +615,17 @@
         function loadBookmarks() { return JSON.parse(localStorage.getItem("quiz_bookmarks") || "[]"); }
         function saveBookmarks(b) { localStorage.setItem("quiz_bookmarks", JSON.stringify(b)); }
         function updateMenuBookmarks() {
-            const bms = loadBookmarks();
+            // Store bookmarks as a Set of decoded filenames for reliable matching
+            const bms = new Set(loadBookmarks().map(b => decodeURIComponent(b)));
+
             document.querySelectorAll("#questionList button[data-file]").forEach(b => {
-                const f = b.dataset.file.split("/").pop();
-                b.style.backgroundColor = bms.includes(f) ? "yellow" : "";
+                const fStr = b.dataset.file.split("/").pop();
+                const fDecoded = decodeURIComponent(fStr);
+
+                const icon = b.querySelector(".fav-icon");
+                if (icon) {
+                    icon.style.display = bms.has(fDecoded) ? "inline-block" : "none";
+                }
             });
         }
         function getQuizStats(f) {
