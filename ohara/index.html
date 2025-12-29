@@ -360,7 +360,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body p-0" style="background-color: #fff;">
-            <div class="container-fluid p-3">
+            <div class="container-fluid p-3" style="max-width: 640px; margin: 0 auto;">
                 <div class="border border-bottom-0">
                     <!-- Header -->
                     <div class="row g-0 bg-secondary text-white text-center py-1 small fw-bold border-bottom">
@@ -796,13 +796,13 @@
 
                 row.innerHTML = `
                     <div class="col-4 p-2 border-end border-bottom">
-                        <select class="form-select form-select-sm journal-select" style="background-color: #fff;">${optionsHtml}</select>
+                        <input type="text" class="form-control form-control-sm journal-account" placeholder="" style="background-color: #fff;">
                     </div>
                     <div class="col-2 p-2 border-end border-bottom">
                         <input type="text" class="form-control form-control-sm text-end journal-amount" placeholder="" inputmode="numeric" style="background-color: #fff;">
                     </div>
                     <div class="col-4 p-2 border-end border-bottom">
-                        <select class="form-select form-select-sm journal-select" style="background-color: #fff;">${optionsHtml}</select>
+                        <input type="text" class="form-control form-control-sm journal-account" placeholder="" style="background-color: #fff;">
                     </div>
                     <div class="col-2 p-2 border-bottom">
                         <input type="text" class="form-control form-control-sm text-end journal-amount" placeholder="" inputmode="numeric" style="background-color: #fff;">
@@ -821,7 +821,7 @@
         }
 
         function clearJournal() {
-            document.querySelectorAll(".journal-select").forEach(el => el.value = "");
+            document.querySelectorAll(".journal-account").forEach(el => el.value = "");
             document.querySelectorAll(".journal-amount").forEach(el => el.value = "");
         }
 
