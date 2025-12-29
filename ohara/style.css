@@ -1,0 +1,181 @@
+:root {
+    --sidebar-width: 300px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+    /* iOSのテキスト自動サイズ調整を抑制 */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+/* 共通レイアウト構造 */
+.main-wrapper {
+    display: flex;
+    flex: 1;
+    width: 100vw;
+    height: 100%;
+    overflow: hidden;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* PC版サイドバーのスタイル (Desktop only) */
+@media (min-width: 992px) {
+    .offcanvas-lg {
+        width: var(--sidebar-width) !important;
+        border-right: 1px solid #dee2e6;
+        visibility: visible !important;
+        transform: none !important;
+        position: relative !important;
+        flex-shrink: 0;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        background-color: #fff !important;
+    }
+
+    .offcanvas-body {
+        overflow-y: auto !important;
+        flex-grow: 1;
+        display: block !important;
+    }
+}
+
+#questionFrame,
+#answerFrame {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background-color: #fff;
+}
+
+.page-number {
+    display: none !important;
+}
+
+/* メニュー内のボタン調整 */
+#questionList .btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+    white-space: normal;
+}
+
+.selected-question {
+    background-color: yellow !important;
+    color: black !important;
+}
+
+.fav-icon {
+    color: #ff4500;
+    margin-left: auto;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding-left: 8px;
+}
+
+.folder-title {
+    background-color: #e9ecef;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+#titleQuizStat {
+    display: block;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+/* 動画をウィンドウ内に収める設定 */
+#modalVideo {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+/* 電卓ボタン（固定） */
+#calcToggleBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    z-index: 1060;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    padding: 0;
+    border: none;
+}
+
+/* 電卓UI用スタイル */
+.calculator {
+    max-width: 100%;
+    width: 300px;
+    margin: 0 auto;
+    background: #eee;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.calc-display {
+    width: 100%;
+    height: 60px;
+    font-size: 1.8rem;
+    text-align: right;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: monospace;
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.calc-grid .btn {
+    height: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+}
