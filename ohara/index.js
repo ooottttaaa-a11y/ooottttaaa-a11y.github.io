@@ -170,6 +170,14 @@ qFrame.addEventListener("load", () => {
     const btn = doc.querySelector("#btn_Answer, #btn_Answer_Text"); if (!btn) return;
 
     hideLabels(doc); startTimer(doc);
+
+    // input_commaクラスを持つinputタグに3桁カンマ区切り機能を追加
+    doc.querySelectorAll("input.input_comma").forEach(input => {
+        input.addEventListener("input", (e) => {
+            let val = e.target.value.replace(/,/g, "").replace(/[^0-9]/g, "");
+            e.target.value = val ? new Intl.NumberFormat('en-US').format(val) : "";
+        });
+    });
     btn.textContent = "回答"; clickedOnce = false;
 
     const qFile = qFrame.src.split("/").pop();
