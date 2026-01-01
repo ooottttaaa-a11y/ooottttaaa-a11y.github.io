@@ -374,3 +374,32 @@ function clearJournal() {
 }
 
 initJournal();
+
+// オフキャンバスの開閉時にメインコンテンツの横幅を調整
+const mainWrapper = document.querySelector('.main-wrapper');
+const calcOffcanvas = document.getElementById('calcOffcanvas');
+const journalOffcanvas = document.getElementById('journalOffcanvas');
+
+// 電卓オフキャンバスのイベント
+calcOffcanvas.addEventListener('show.bs.offcanvas', () => {
+    // モバイルでは調整しない
+    if (window.innerWidth > 768) {
+        mainWrapper.classList.add('offcanvas-open');
+    }
+});
+
+calcOffcanvas.addEventListener('hidden.bs.offcanvas', () => {
+    mainWrapper.classList.remove('offcanvas-open');
+});
+
+// 仕訳オフキャンバスのイベント
+journalOffcanvas.addEventListener('show.bs.offcanvas', () => {
+    // モバイルでは調整しない
+    if (window.innerWidth > 768) {
+        mainWrapper.classList.add('offcanvas-open');
+    }
+});
+
+journalOffcanvas.addEventListener('hidden.bs.offcanvas', () => {
+    mainWrapper.classList.remove('offcanvas-open');
+});

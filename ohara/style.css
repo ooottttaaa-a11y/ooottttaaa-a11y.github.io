@@ -179,3 +179,25 @@ body {
     font-weight: bold;
     border-radius: 8px;
 }
+
+/* オフキャンバスが表示されたときのメインコンテンツ調整 */
+.main-wrapper {
+    transition: width 0.3s ease-in-out;
+}
+
+.main-wrapper.offcanvas-open {
+    width: calc(100vw - 400px);
+    /* オフキャンバスの幅に合わせて調整 */
+}
+
+/* オフキャンバスのスタイル設定 */
+.offcanvas-end {
+    width: 400px !important;
+}
+
+/* モバイルではメインコンテンツを調整しない */
+@media (max-width: 768px) {
+    .main-wrapper.offcanvas-open {
+        width: 100vw;
+    }
+}
