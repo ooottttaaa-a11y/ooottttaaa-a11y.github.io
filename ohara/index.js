@@ -171,10 +171,10 @@ qFrame.addEventListener("load", () => {
 
     hideLabels(doc); startTimer(doc);
 
-    // input_commaクラスを持つinputタグに3桁カンマ区切り機能を追加
+    // input_commaクラスを持つinputタグに3桁カンマ区切り機能を追加(小数点対応)
     doc.querySelectorAll("input.input_comma").forEach(input => {
         input.addEventListener("input", (e) => {
-            let val = e.target.value.replace(/,/g, "").replace(/[^0-9]/g, "");
+            let val = e.target.value.replace(/,/g, "").replace(/[^0-9.]/g, "");
             e.target.value = val ? new Intl.NumberFormat('en-US').format(val) : "";
         });
     });
@@ -359,10 +359,10 @@ function initJournal() {
         container.appendChild(row);
     }
 
-    // Attach event listeners for amount formatting
+    // Attach event listeners for amount formatting(小数点対応)
     document.querySelectorAll(".journal-amount").forEach(input => {
         input.addEventListener("input", (e) => {
-            let val = e.target.value.replace(/,/g, "").replace(/[^0-9]/g, "");
+            let val = e.target.value.replace(/,/g, "").replace(/[^0-9.]/g, "");
             e.target.value = val ? new Intl.NumberFormat('en-US').format(val) : "";
         });
     });
