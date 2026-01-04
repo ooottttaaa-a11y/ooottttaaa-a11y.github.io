@@ -22,6 +22,15 @@
                 <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas"
                     data-bs-target="#offcanvasMenu" aria-label="Close"></button>
             </div>
+            <div class="p-2 border-bottom bg-light">
+                <div class="btn-group w-100 btn-group-sm" role="group">
+                    <input type="radio" class="btn-check" name="viewMode" id="modeQuestion" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="modeQuestion">問題</label>
+
+                    <input type="radio" class="btn-check" name="viewMode" id="modeAnswer" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="modeAnswer">解説</label>
+                </div>
+            </div>
             <div class="offcanvas-body p-2" id="questionList">
                 <!-- JSでコンテンツ生成 -->
             </div>

@@ -9,6 +9,17 @@ let offcanvasInstance;
 let clickedOnce = false;
 let timerInterval = null;
 let elapsedSeconds = 0;
+let isAnswerMode = false;
+
+// モード切り替えイベント
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("modeQuestion").addEventListener("change", (e) => {
+        if (e.target.checked) isAnswerMode = false;
+    });
+    document.getElementById("modeAnswer").addEventListener("change", (e) => {
+        if (e.target.checked) isAnswerMode = true;
+    });
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     offcanvasInstance = new bootstrap.Offcanvas(offcanvasEl);
@@ -90,11 +101,28 @@ function buildMenu(data) {
                     btn.classList.add("selected-question");
 
                     document.getElementById("welcomeMessage").classList.add("d-none");
-                    qFrame.src = btn.dataset.file;
-                    aFrame.classList.add("d-none");
-                    qFrame.classList.remove("d-none");
-                    titleEl.textContent = spanText.textContent;
-                    clickedOnce = false;
+
+                    if (isAnswerMode) {
+                        // 解説モード
+                        stopTimer();
+                        const aFile = btn.dataset.file.replace(".html", "A.html");
+                        aFrame.src = aFile;
+                        // 読み込み完了時に不要な要素を隠す
+                        aFrame.onload = () => {
+                            const doc = aFrame.contentDocument;
+                            if (doc) hideLabels(doc, true);
+                        };
+                        qFrame.classList.add("d-none");
+                        aFrame.classList.remove("d-none");
+                        titleEl.textContent = spanText.textContent + " (解説)";
+                    } else {
+                        // 問題モード
+                        qFrame.src = btn.dataset.file;
+                        aFrame.classList.add("d-none");
+                        qFrame.classList.remove("d-none");
+                        titleEl.textContent = spanText.textContent;
+                        clickedOnce = false;
+                    }
 
                     if (window.innerWidth < 992) {
                         offcanvasInstance.hide();
